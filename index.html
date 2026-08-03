@@ -215,7 +215,23 @@ button{background:none;border:0;cursor:pointer}
 .heat-key .level-2{background:var(--ember-dim)}
 .heat-key .level-3{background:var(--ember)}
 .day-actions,.data-actions{display:flex;gap:8px}
-.data-actions{justify-content:center;padding-bottom:8px}
+.data-actions{justify-content:center;padding:12px 14px 14px;border-top:1px solid var(--line-soft);flex-wrap:wrap}
+.app-settings{overflow:visible}
+.settings-list{display:grid}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line-soft)}
+.settings-row:last-child{border-bottom:0}
+.settings-row>div{min-width:0}
+.settings-title{font-size:.875rem;font-weight:600;color:var(--text)}
+.settings-copy{font-size:.75rem;color:var(--text-3);line-height:1.45;margin-top:2px;overflow-wrap:anywhere}
+.settings-copy.good{color:var(--jade)}
+.settings-copy.warn{color:var(--gold)}
+.mini.danger:hover{border-color:var(--ember);color:var(--ember-ink);background:var(--ember-wash)}
+@media(max-width:520px){
+  .settings-row{align-items:flex-start}
+  .settings-row .mini{flex:none}
+  .data-actions{display:grid;grid-template-columns:1fr 1fr}
+  .data-actions .mini:last-child{grid-column:1 / -1}
+}
 .quiet-note{font-size:.75rem;color:var(--text-3)}
 .session-clock{font-size:.8125rem;color:var(--text-3)}
 
@@ -394,16 +410,6 @@ button{background:none;border:0;cursor:pointer}
 @media(min-width:1121px){
   .coach{position:sticky;top:var(--s-5)}
 }
-.coach-key{
-  margin-left:auto;display:inline-flex;align-items:center;gap:7px;
-  min-height:34px;padding:6px 10px;border:1px solid var(--line);
-  border-radius:10px;background:var(--ink-3);color:var(--text-2);
-  font-size:.72rem;font-weight:700;letter-spacing:.02em;
-  transition:background .16s,color .16s,border-color .16s,transform .16s var(--quart);
-}
-.coach-key:hover{background:var(--line);color:var(--text)}
-.coach-key:active{transform:scale(.96)}
-.coach-key svg{flex:none}
 .dot{width:6px;height:6px;border-radius:99px;background:var(--text-3)}
 .dot.live{background:var(--jade);box-shadow:0 0 0 3px var(--jade-wash)}
 .dot.armed{background:var(--ember);box-shadow:0 0 0 3px var(--ember-wash)}
@@ -430,12 +436,6 @@ button{background:none;border:0;cursor:pointer}
     max-height:calc(var(--viewport-h, 100dvh) - 24px);
     scroll-margin-top:12px;
   }
-  .chips{
-    flex:0 0 auto;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
-    -webkit-overflow-scrolling:touch;scrollbar-width:none;
-  }
-  .chips::-webkit-scrollbar{display:none}
-  .chip{flex:0 0 auto}
   .composer{
     flex:0 0 auto;background:var(--panel);
     padding-bottom:max(12px,env(safe-area-inset-bottom));
@@ -468,11 +468,6 @@ button{background:none;border:0;cursor:pointer}
 .proposal li{display:flex;gap:8px}
 .proposal li::before{content:"↳";color:var(--gold);font-family:var(--mono)}
 .proposal .acts{display:flex;gap:8px;margin-top:12px}
-
-.chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 12px}
-.chip{font-size:0.75rem;font-weight:500;padding:6px 11px;border-radius:99px;border:1px solid var(--line);color:var(--text-2);transition:background .16s,border-color .16s,color .16s,transform .16s var(--quart)}
-.chip:hover{background:var(--panel-2);border-color:var(--text-3);color:var(--text)}
-.chip:active{transform:translateY(1px)}
 
 .composer{display:flex;gap:8px;align-items:flex-end;padding:12px 14px;border-top:1px solid var(--line-soft)}
 .composer textarea{
@@ -602,8 +597,6 @@ button{background:none;border:0;cursor:pointer}
 @media(max-width:390px){
   .coach{left:4px;right:4px;border-radius:18px}
   .coach>.panel-head{padding-left:10px;padding-right:8px}
-  .coach-key span{display:none}
-  .coach-key{width:34px;padding:0;justify-content:center}
 }
 
 .toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:240;display:grid;gap:8px;justify-items:center;pointer-events:none;padding:0 12px}
@@ -738,10 +731,6 @@ dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
         <div class="panel-head">
           <span class="dot" id="coach-dot"></span>
           <h3>Coach</h3>
-          <button class="coach-key" id="coach-key" type="button" aria-label="Set Gemini API key" title="Set Gemini API key">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l3 3M14 9l3 3"/></svg>
-            <span>API key</span>
-          </button>
           <button class="coach-close" id="coach-close" type="button" aria-label="Close coach">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
           </button>
@@ -749,7 +738,6 @@ dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
 
         <div id="tab-chat">
           <div class="stream" id="stream"></div>
-          <div class="chips" id="chips"></div>
           <form class="composer" id="composer">
             <textarea id="ask" rows="1" aria-label="Ask your coach" placeholder="Ask your coach anything..."></textarea>
             <button class="send" id="send" type="submit" aria-label="Send">
@@ -765,10 +753,31 @@ dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
         <div class="recs" id="recs"></div>
       </div>
 
-      <div class="data-actions">
-        <button class="mini ghost" id="btn-export">Export JSON</button>
-        <button class="mini ghost" id="btn-import">Import</button>
-        <button class="mini ghost" id="btn-wipe">Reset</button>
+      <div class="panel app-settings" id="app-settings">
+        <div class="panel-head">
+          <h3>App settings</h3>
+        </div>
+        <div class="settings-list">
+          <div class="settings-row">
+            <div>
+              <div class="settings-title">AI coach connection</div>
+              <div class="settings-copy" id="ai-connection-copy">Not connected</div>
+            </div>
+            <button class="mini" id="btn-ai-settings" type="button">API key</button>
+          </div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-title">Coach conversation</div>
+              <div class="settings-copy">Remove saved messages without changing workout data.</div>
+            </div>
+            <button class="mini ghost" id="btn-clear-chat" type="button">Clear chat</button>
+          </div>
+        </div>
+        <div class="data-actions">
+          <button class="mini ghost" id="btn-export">Export JSON</button>
+          <button class="mini ghost" id="btn-import">Import</button>
+          <button class="mini ghost danger" id="btn-wipe">Reset data</button>
+        </div>
       </div>
     </aside>
   </div>
@@ -801,7 +810,7 @@ dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
       <button class="mini" id="key-save" type="button">Save key</button>
       <button class="mini solid" id="key-test" type="button">Save &amp; test</button>
     </div>
-    <p class="key-help">Need a key? Create one in <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. You can reopen this window anytime from the key button in the Coach header.</p>
+    <p class="key-help">Need a key? Create one in <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. You can reopen this window anytime from App settings below the Records panel.</p>
   </div>
 </dialog>
 
@@ -1605,7 +1614,7 @@ function renderChat(){
   if(!S.chat.length){
     s.innerHTML = configured()
       ? `<div class="empty"><strong>Coach is ready</strong>Ask anything, or tap a prompt below. It already has your recent sessions, PRs and notes.</div>`
-      : `<div class="empty"><strong>Connect the AI coach</strong>Add your Gemini API key once, then use this panel only as chat.<br><button class="mini solid" data-open-key="1" style="margin-top:12px">Add API key</button></div>`;
+      : `<div class="empty"><strong>Coach is not connected</strong>Add your Gemini API key from <b>App settings</b>. Asking a question here will also open the connection window.</div>`;
   } else {
     s.innerHTML = S.chat.map(m=>m.role==='user'
       ? `<div class="msg me">${esc(m.content)}</div>`
@@ -1884,19 +1893,6 @@ $('#composer').addEventListener('submit', e=>{
 $('#ask').addEventListener('input', e=>{ e.target.style.height='auto'; e.target.style.height=Math.min(130,e.target.scrollHeight)+'px' });
 $('#ask').addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); $('#composer').requestSubmit(); } });
 
-const CHIPS = [
-  ['Debrief today', 'Debrief the session I just logged. Be specific about what to change next time.'],
-  ['Am I progressing?', 'Look across the last month. Which lifts are moving, which are stuck, and what do I do about the stuck ones?'],
-  ["Fix today's plan", "Adjust today's workout based on my recent numbers. Change targets if the data says so."],
-  ['Too easy', 'Everything felt too easy today. Rebuild the intensity.'],
-  ['Beat up', 'I am under-recovered and sore. Give me a lighter version of this week.'],
-  ['Find the gap', 'Look at my split for gaps and add the one exercise that would help most.']
-];
-$('#chips').innerHTML = CHIPS.map(([l,q])=>`<button class="chip" data-q="${esc(q)}">${esc(l)}</button>`).join('');
-$('#chips').addEventListener('click', e=>{
-  const q = e.target.closest('[data-q]')?.dataset.q; if(q) askCoach(q);
-});
-
 let pendingCoachRequest = null;
 const keyDialog = $('#key-dlg');
 const keyInput = $('#quick-ai-key');
@@ -1904,6 +1900,13 @@ const keyStatus = $('#key-test-status');
 const keyTestButton = $('#key-test');
 const keySaveButton = $('#key-save');
 const keySkipButton = $('#key-skip');
+const aiConnectionCopy = $('#ai-connection-copy');
+function renderAppSettings(){
+  const on = configured();
+  aiConnectionCopy.textContent = on ? `${S.ai.model} connected in this browser` : 'Not connected';
+  aiConnectionCopy.className = `settings-copy ${on ? 'good' : 'warn'}`;
+  $('#btn-ai-settings').textContent = on ? 'Manage key' : 'Add key';
+}
 
 function setKeyStatus(message='', kind=''){
   keyStatus.textContent = message;
@@ -1937,6 +1940,7 @@ function storeGeminiKey(){
   $('#coach-dot').className = 'dot armed';
   $('#key-dlg-dot').className = 'dot armed';
   renderChat();
+  renderAppSettings();
   return true;
 }
 function continuePendingCoachRequest(){
@@ -1945,9 +1949,15 @@ function continuePendingCoachRequest(){
   if(pending) setTimeout(()=>askCoach(pending.text, pending.silentUser), 120);
 }
 
-$('#coach-key').addEventListener('click', ()=>openApiKeyDialog());
-coachStream.addEventListener('click', e=>{
-  if(e.target.closest('[data-open-key]')) openApiKeyDialog();
+$('#btn-ai-settings').addEventListener('click', ()=>openApiKeyDialog());
+$('#btn-clear-chat').addEventListener('click', ()=>{
+  if(!S.chat.length){ toast('Coach chat is already empty'); return; }
+  if(!confirm('Clear the saved coach conversation on this device?')) return;
+  S.chat = [];
+  save('chat', S.chat);
+  coachAutoScroll = true;
+  renderChat();
+  toast('Coach chat cleared','ok');
 });
 keySkipButton.addEventListener('click', ()=>closeApiKeyDialog({skipped:true}));
 keySaveButton.addEventListener('click', ()=>{
@@ -2138,7 +2148,7 @@ syncCoachSheetMode();
 function renderAll(){
   const next = renderMeta();
   if(!S._picked){ S.day = next; S._picked = true; }
-  renderHeat(); renderDay(); renderRecords(); renderChat();
+  renderHeat(); renderDay(); renderRecords(); renderChat(); renderAppSettings();
 }
 renderAll();
 promptForApiKeyAtStartup();
