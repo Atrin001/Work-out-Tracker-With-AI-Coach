@@ -525,8 +525,87 @@ button{background:none;border:0;cursor:pointer}
 .keystate.good{border-color:var(--jade);color:var(--jade)}
 .keystate.warnk{border-color:var(--gold);color:var(--gold)}
 
-.fab{display:none;position:fixed;right:16px;bottom:16px;z-index:40;padding:13px 18px;border-radius:99px;background:var(--ember);color:oklch(0.18 0.03 42);font-weight:700;font-size:0.875rem;align-items:center;gap:8px}
-@media(max-width:1120px){.fab{display:flex}}
+.fab{
+  display:none;position:fixed;z-index:120;
+  align-items:center;justify-content:center;gap:8px;
+  min-height:50px;padding:12px 18px;border-radius:99px;
+  background:var(--ember);color:oklch(0.18 0.03 42);
+  font-weight:700;font-size:0.875rem;
+  box-shadow:0 14px 38px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.05) inset;
+  transition:transform .22s var(--quart),background .18s,box-shadow .18s;
+}
+.fab:hover{background:var(--ember-ink)}
+.fab:active{transform:translateX(-50%) scale(.97)}
+.fab-icon-close{display:none}
+.coach-close{display:none}
+.coach-sheet-backdrop{display:none}
+
+@media(max-width:720px){
+  .fab{
+    display:flex;left:50%;right:auto;
+    bottom:max(10px,env(safe-area-inset-bottom));
+    width:min(360px,calc(100% - 32px));
+    transform:translateX(-50%);
+  }
+  body.coach-open .fab{background:var(--ink-2);color:var(--text);box-shadow:0 14px 40px rgba(0,0,0,.48),0 0 0 1px var(--line) inset}
+  body.coach-open .fab-icon-chat{display:none}
+  body.coach-open .fab-icon-close{display:block}
+
+  .coach-sheet-backdrop{
+    display:block;position:fixed;inset:0;z-index:105;
+    background:oklch(0.08 0.01 62 / .72);
+    -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .24s ease,visibility 0s linear .24s;
+  }
+  .coach-sheet-backdrop.is-open{
+    opacity:1;visibility:visible;pointer-events:auto;
+    transition:opacity .24s ease,visibility 0s;
+  }
+
+  .coach{
+    position:fixed;left:8px;right:8px;bottom:calc(72px + env(safe-area-inset-bottom));
+    z-index:110;width:auto;
+    height:calc(var(--viewport-h,100dvh) - 88px - env(safe-area-inset-top));
+    min-height:0;max-height:760px;
+    border-radius:22px;
+    box-shadow:0 28px 80px rgba(0,0,0,.58);
+    transform:translateY(calc(100% + 110px));
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:transform .32s var(--exp),opacity .22s ease,visibility 0s linear .32s;
+    scroll-margin-top:0;
+  }
+  .coach.is-open{
+    transform:translateY(0);opacity:1;visibility:visible;pointer-events:auto;
+    transition:transform .32s var(--exp),opacity .22s ease,visibility 0s;
+  }
+  .coach>.panel-head{
+    position:relative;min-height:58px;padding:20px 12px 10px 14px;
+    cursor:grab;touch-action:pan-y;
+  }
+  .coach>.panel-head::before{
+    content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);
+    width:42px;height:4px;border-radius:99px;background:var(--line);
+  }
+  .coach-tabs{gap:0}
+  .coach-tabs button{padding:6px 8px}
+  .coach-close{
+    display:grid;place-items:center;flex:0 0 auto;
+    width:34px;height:34px;margin-left:2px;border-radius:10px;
+    border:1px solid var(--line);background:var(--ink-3);color:var(--text-2);
+    transition:background .16s,color .16s,transform .16s var(--quart);
+  }
+  .coach-close:active{transform:scale(.94)}
+  .coach-close:hover{background:var(--line);color:var(--text)}
+  .stream{padding:14px}
+  .composer{padding-bottom:max(12px,env(safe-area-inset-bottom))}
+}
+
+@media(max-width:390px){
+  .coach{left:4px;right:4px;border-radius:18px}
+  .coach>.panel-head{padding-left:10px;padding-right:8px}
+  .coach-tabs button{font-size:.6875rem;padding:6px 7px}
+}
 
 .toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:60;display:grid;gap:8px;justify-items:center;pointer-events:none;padding:0 12px}
 .toast{background:var(--ink-2);border:1px solid var(--line);border-radius:11px;padding:11px 17px;font-size:0.875rem;font-weight:500;animation:toastIn .4s var(--exp)}
@@ -647,6 +726,9 @@ dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
             <button role="tab" data-tab="signals" aria-selected="false">Signals</button>
             <button role="tab" data-tab="setup" aria-selected="false">Setup</button>
           </div>
+          <button class="coach-close" id="coach-close" type="button" aria-label="Close coach">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
         </div>
 
         <div id="tab-chat">
@@ -678,9 +760,12 @@ dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
   </div>
 </div>
 
-<button class="fab" id="fab">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-  Coach
+<div class="coach-sheet-backdrop" id="coach-backdrop" aria-hidden="true"></div>
+
+<button class="fab" id="fab" type="button" aria-controls="coach" aria-expanded="false">
+  <svg class="fab-icon-chat" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <svg class="fab-icon-close" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+  <span id="fab-label">Open coach</span>
 </button>
 
 <dialog id="dlg">
@@ -1938,13 +2023,110 @@ addEventListener('resize', syncViewportHeight, {passive:true});
 window.visualViewport?.addEventListener('resize', syncViewportHeight, {passive:true});
 window.visualViewport?.addEventListener('scroll', syncViewportHeight, {passive:true});
 
-$('#fab').onclick = ()=>{
-  $('#coach').scrollIntoView({behavior:'smooth',block:'start'});
-  // Avoid opening the phone keyboard before the user can swipe through the coach.
+const phoneCoachMQ = matchMedia('(max-width:720px)');
+const coachPanel = $('#coach');
+const coachFab = $('#fab');
+const coachFabLabel = $('#fab-label');
+const coachBackdrop = $('#coach-backdrop');
+const coachClose = $('#coach-close');
+let coachPageY = 0;
+let coachSheetOpen = false;
+
+function lockPageForCoach(){
+  coachPageY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${coachPageY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+  document.body.style.overflow = 'hidden';
+}
+function unlockPageFromCoach(){
+  document.body.style.removeProperty('position');
+  document.body.style.removeProperty('top');
+  document.body.style.removeProperty('left');
+  document.body.style.removeProperty('right');
+  document.body.style.removeProperty('width');
+  document.body.style.removeProperty('overflow');
+  window.scrollTo(0, coachPageY);
+}
+function applyCoachSheetState(open, {returnFocus=true}={}){
+  if(!phoneCoachMQ.matches) return;
+  coachSheetOpen = !!open;
+  coachPanel.classList.toggle('is-open', coachSheetOpen);
+  coachBackdrop.classList.toggle('is-open', coachSheetOpen);
+  document.body.classList.toggle('coach-open', coachSheetOpen);
+  coachFab.setAttribute('aria-expanded', String(coachSheetOpen));
+  coachBackdrop.setAttribute('aria-hidden', String(!coachSheetOpen));
+  coachPanel.setAttribute('aria-hidden', String(!coachSheetOpen));
+  coachPanel.inert = !coachSheetOpen;
+  coachFabLabel.textContent = coachSheetOpen ? 'Close coach' : 'Open coach';
+
+  if(coachSheetOpen){
+    lockPageForCoach();
+    coachAutoScroll = true;
+    scrollCoachToBottom(true);
+    setTimeout(()=>coachClose.focus({preventScroll:true}), 330);
+  }else{
+    $('#ask').blur();
+    unlockPageFromCoach();
+    if(returnFocus) coachFab.focus({preventScroll:true});
+  }
+}
+function resetCoachSheetForDesktop(){
+  if(coachSheetOpen) unlockPageFromCoach();
+  coachSheetOpen = false;
+  coachPanel.classList.remove('is-open');
+  coachBackdrop.classList.remove('is-open');
+  document.body.classList.remove('coach-open');
+  coachFab.setAttribute('aria-expanded','false');
+  coachFabLabel.textContent = 'Open coach';
+  coachPanel.removeAttribute('aria-hidden');
+  coachPanel.inert = false;
+  coachBackdrop.setAttribute('aria-hidden','true');
+}
+function syncCoachSheetMode(){
+  if(phoneCoachMQ.matches){
+    coachPanel.setAttribute('aria-hidden', String(!coachSheetOpen));
+    coachPanel.inert = !coachSheetOpen;
+  }else{
+    resetCoachSheetForDesktop();
+  }
+}
+
+coachFab.addEventListener('click', ()=>{
+  if(phoneCoachMQ.matches){
+    applyCoachSheetState(!coachSheetOpen);
+    return;
+  }
+  coachPanel.scrollIntoView({behavior:'smooth',block:'start'});
   if(matchMedia('(hover:hover) and (pointer:fine)').matches){
     setTimeout(()=>$('#ask').focus({preventScroll:true}),450);
   }
-};
+});
+coachClose.addEventListener('click', ()=>applyCoachSheetState(false));
+coachBackdrop.addEventListener('click', ()=>applyCoachSheetState(false));
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && coachSheetOpen) applyCoachSheetState(false);
+});
+
+// A short downward swipe on the header closes the phone sheet.
+let coachDragStart = null;
+coachPanel.querySelector('.panel-head').addEventListener('touchstart', e=>{
+  if(!coachSheetOpen || e.touches.length!==1) return;
+  coachDragStart = {x:e.touches[0].clientX,y:e.touches[0].clientY};
+}, {passive:true});
+coachPanel.querySelector('.panel-head').addEventListener('touchend', e=>{
+  if(!coachDragStart || !e.changedTouches.length) return;
+  const dx = e.changedTouches[0].clientX - coachDragStart.x;
+  const dy = e.changedTouches[0].clientY - coachDragStart.y;
+  coachDragStart = null;
+  if(dy>72 && Math.abs(dx)<90) applyCoachSheetState(false);
+}, {passive:true});
+
+if(phoneCoachMQ.addEventListener) phoneCoachMQ.addEventListener('change', syncCoachSheetMode);
+else phoneCoachMQ.addListener(syncCoachSheetMode);
+syncCoachSheetMode();
 
 function renderAll(){
   const next = renderMeta();
