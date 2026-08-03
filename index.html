@@ -391,19 +391,19 @@ button{background:none;border:0;cursor:pointer}
   display:flex;flex:1 1 0;flex-direction:column;
   min-height:0;overflow:hidden;
 }
-#tab-signals,#tab-setup{min-height:0;min-width:0}
-#tab-signals:not([hidden]),#tab-setup:not([hidden]){
-  flex:1 1 0;overflow-y:auto;overflow-x:hidden;
-  overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;
-  touch-action:pan-y;
-}
 @media(min-width:1121px){
   .coach{position:sticky;top:var(--s-5)}
 }
-.coach-tabs{display:flex;gap:2px;margin-left:auto}
-.coach-tabs button{font-size:0.75rem;font-weight:600;padding:5px 10px;border-radius:7px;color:var(--text-3);transition:background .16s,color .16s}
-.coach-tabs button:hover{color:var(--text)}
-.coach-tabs button[aria-selected="true"]{background:var(--ink-3);color:var(--text)}
+.coach-key{
+  margin-left:auto;display:inline-flex;align-items:center;gap:7px;
+  min-height:34px;padding:6px 10px;border:1px solid var(--line);
+  border-radius:10px;background:var(--ink-3);color:var(--text-2);
+  font-size:.72rem;font-weight:700;letter-spacing:.02em;
+  transition:background .16s,color .16s,border-color .16s,transform .16s var(--quart);
+}
+.coach-key:hover{background:var(--line);color:var(--text)}
+.coach-key:active{transform:scale(.96)}
+.coach-key svg{flex:none}
 .dot{width:6px;height:6px;border-radius:99px;background:var(--text-3)}
 .dot.live{background:var(--jade);box-shadow:0 0 0 3px var(--jade-wash)}
 .dot.armed{background:var(--ember);box-shadow:0 0 0 3px var(--ember-wash)}
@@ -587,8 +587,6 @@ button{background:none;border:0;cursor:pointer}
     content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);
     width:42px;height:4px;border-radius:99px;background:var(--line);
   }
-  .coach-tabs{gap:0}
-  .coach-tabs button{padding:6px 8px}
   .coach-close{
     display:grid;place-items:center;flex:0 0 auto;
     width:34px;height:34px;margin-left:2px;border-radius:10px;
@@ -604,10 +602,11 @@ button{background:none;border:0;cursor:pointer}
 @media(max-width:390px){
   .coach{left:4px;right:4px;border-radius:18px}
   .coach>.panel-head{padding-left:10px;padding-right:8px}
-  .coach-tabs button{font-size:.6875rem;padding:6px 7px}
+  .coach-key span{display:none}
+  .coach-key{width:34px;padding:0;justify-content:center}
 }
 
-.toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:60;display:grid;gap:8px;justify-items:center;pointer-events:none;padding:0 12px}
+.toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:240;display:grid;gap:8px;justify-items:center;pointer-events:none;padding:0 12px}
 .toast{background:var(--ink-2);border:1px solid var(--line);border-radius:11px;padding:11px 17px;font-size:0.875rem;font-weight:500;animation:toastIn .4s var(--exp)}
 .toast.win{border-color:var(--gold);color:var(--gold)}
 .toast.ok{border-color:var(--jade);color:var(--jade)}
@@ -618,6 +617,24 @@ button{background:none;border:0;cursor:pointer}
 
 dialog{border:1px solid var(--line);background:var(--ink-1);color:var(--text);border-radius:var(--r-lg);padding:0;max-width:460px;width:calc(100% - 32px)}
 dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
+.key-dialog{max-width:470px;overflow:hidden;box-shadow:0 28px 90px rgba(0,0,0,.58)}
+.key-dialog .panel-head{padding:16px 18px}
+.key-dialog .setup{padding:18px;gap:14px}
+.key-dialog .intro{font-size:.88rem;color:var(--text-2);line-height:1.6}
+.key-dialog .key-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:2px}
+.key-dialog .key-status{display:none;padding:10px 12px;border-radius:10px;border:1px solid var(--line-soft);background:var(--panel-2);font-size:.8rem;line-height:1.5;overflow-wrap:anywhere}
+.key-dialog .key-status.show{display:block}
+.key-dialog .key-status.wait{border-color:var(--gold);color:var(--gold)}
+.key-dialog .key-status.good{border-color:var(--jade);color:var(--jade)}
+.key-dialog .key-status.bad{border-color:var(--ember);color:var(--ember-ink)}
+.key-dialog .key-help{font-size:.74rem;color:var(--text-3);line-height:1.55}
+.key-dialog .key-help a{color:var(--ember-ink)}
+@media(max-width:520px){
+  .key-dialog{width:calc(100% - 20px);max-height:calc(var(--viewport-h,100dvh) - 24px)}
+  .key-dialog .key-actions{display:grid;grid-template-columns:1fr 1fr}
+  .key-dialog .key-actions .key-skip{grid-column:1 / -1;order:3}
+}
+
 
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -721,11 +738,10 @@ dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
         <div class="panel-head">
           <span class="dot" id="coach-dot"></span>
           <h3>Coach</h3>
-          <div class="coach-tabs right" role="tablist">
-            <button role="tab" data-tab="chat" aria-selected="true">Chat</button>
-            <button role="tab" data-tab="signals" aria-selected="false">Signals</button>
-            <button role="tab" data-tab="setup" aria-selected="false">Setup</button>
-          </div>
+          <button class="coach-key" id="coach-key" type="button" aria-label="Set Gemini API key" title="Set Gemini API key">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l3 3M14 9l3 3"/></svg>
+            <span>API key</span>
+          </button>
           <button class="coach-close" id="coach-close" type="button" aria-label="Close coach">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
           </button>
@@ -742,12 +758,10 @@ dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
           </form>
         </div>
 
-        <div id="tab-signals" class="signals" hidden></div>
-        <div id="tab-setup" class="setup" hidden></div>
       </div>
 
       <div class="panel">
-        <div class="panel-head"><h3>Records</h3><div class="right"><button class="mini ghost" id="btn-sample">Demo data</button></div></div>
+        <div class="panel-head"><h3>Records</h3></div>
         <div class="recs" id="recs"></div>
       </div>
 
@@ -771,6 +785,24 @@ dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
 <dialog id="dlg">
   <div class="panel-head"><h3 id="dlg-title">Add exercise</h3></div>
   <div class="setup" id="dlg-body"></div>
+</dialog>
+
+<dialog id="key-dlg" class="key-dialog" aria-labelledby="key-dlg-title">
+  <div class="panel-head">
+    <span class="dot" id="key-dlg-dot"></span>
+    <h3 id="key-dlg-title">Connect the AI coach</h3>
+  </div>
+  <div class="setup">
+    <p class="intro">Paste your Google Gemini API key once. It is saved only in this browser and the coach will use it to read your logged workouts and answer in the chat.</p>
+    <label><span class="lb">Gemini API key</span><input id="quick-ai-key" type="password" autocomplete="off" spellcheck="false" placeholder="AIza..."></label>
+    <div class="key-status" id="key-test-status" role="status" aria-live="polite"></div>
+    <div class="key-actions">
+      <button class="mini ghost key-skip" id="key-skip" type="button">Skip for now</button>
+      <button class="mini" id="key-save" type="button">Save key</button>
+      <button class="mini solid" id="key-test" type="button">Save &amp; test</button>
+    </div>
+    <p class="key-help">Need a key? Create one in <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. You can reopen this window anytime from the key button in the Coach header.</p>
+  </div>
 </dialog>
 
 <div class="toasts" id="toasts"></div>
@@ -886,6 +918,15 @@ if (S.ai.provider === 'gemini' && !/^https:\/\/generativelanguage\.googleapis\.c
   aiMigrated = true;
 }
 if (aiMigrated) save('ai', S.ai);
+
+// Chat-only coach: keep the saved key, but remove provider/model setup from the UI.
+// This also repairs old browser settings that pointed at another provider or endpoint.
+const savedGeminiKey = String(S.ai.key || CONFIG.key || '').trim();
+if (S.ai.provider !== CONFIG.provider || S.ai.endpoint !== CONFIG.endpoint || S.ai.model !== CONFIG.model || S.ai.key !== savedGeminiKey) {
+  S.ai = {provider:CONFIG.provider, endpoint:CONFIG.endpoint, model:CONFIG.model, key:savedGeminiKey};
+  save('ai', S.ai);
+}
+
 
 /* ══════════════════════════════════════════════════════════════════
    3. UTIL
@@ -1433,39 +1474,19 @@ function buildSignals(){
   if(S.sessions.length>=3)
     out.push({kind: perWeek[0]>=3?'up':'info', t:'Frequency', d:`Sessions per week, most recent first: <b>${perWeek.join(' · ')}</b>. Three is the floor for this split.`});
 
-  if(!out.length) out.push({kind:'info', t:'Not enough data', d:`Log two sessions and real signals show up here. No key needed for this tab.`});
+  if(!out.length) out.push({kind:'info', t:'Not enough data', d:`Log at least two sessions so the coach has enough history to analyze.`});
   return out.slice(0,7);
 }
 
-function renderSignals(){
-  $('#tab-signals').innerHTML = buildSignals().map(s=>`
-    <div class="sig">
-      <div class="t"><span class="kind ${s.kind}">${s.kind==='up'?'push':s.kind==='hold'?'stall':s.kind}</span>${esc(s.t)}</div>
-      <div class="d">${s.d}</div>
-      ${s.act?`<button class="mini go" data-q="${esc(s.act.q)}">${esc(s.act.label)}</button>`:''}
-    </div>`).join('');
-}
-$('#tab-signals').addEventListener('click', e=>{
-  const q = e.target.closest('[data-q]')?.dataset.q; if(!q) return;
-  switchTab('chat'); askCoach(q);
-});
 
 /* ══════════════════════════════════════════════════════════════════
    10. THE COACH
    ══════════════════════════════════════════════════════════════════ */
 const PRESETS = {
-  gemini:     {endpoint:'https://generativelanguage.googleapis.com/v1beta', model:'gemini-3.6-flash', needsKey:true, label:'Google Gemini 3 (recommended)', kind:'gemini',
-              keyUrl:'https://aistudio.google.com/apikey',
-              models:['gemini-3.6-flash','gemini-3.5-flash','gemini-3.5-flash-lite']},
-  openai:     {endpoint:'https://api.openai.com/v1', model:'gpt-4o-mini', needsKey:true, label:'OpenAI', kind:'oai'},
-  anthropic: {endpoint:'https://api.anthropic.com', model:'claude-3-5-haiku-latest', needsKey:true, label:'Anthropic', kind:'anthropic'},
-  groq:      {endpoint:'https://api.groq.com/openai/v1', model:'llama-3.3-70b-versatile', needsKey:true, label:'Groq', kind:'oai'},
-  ollama:    {endpoint:'http://localhost:11434/v1', model:'llama3.1', needsKey:false, label:'Ollama (local)', kind:'oai'},
-  proxy:     {endpoint:'https://your-worker.workers.dev', model:'gemini-3.6-flash', needsKey:false, label:'My Gemini proxy (recommended for public sites)', kind:'gemini-proxy',
-              models:['gemini-3.6-flash','gemini-3.5-flash','gemini-3.5-flash-lite']}
+  gemini: {endpoint:CONFIG.endpoint, model:CONFIG.model, needsKey:true, label:'Google Gemini', kind:'gemini'}
 };
-const preset = () => PRESETS[S.ai.provider] || PRESETS['gemini'];
-const configured = () => !!S.ai.endpoint && (!preset().needsKey || !!S.ai.key);
+const preset = () => PRESETS.gemini;
+const configured = () => !!String(S.ai.key || '').trim();
 
 function snapshot(){
   const recent = S.sessions.slice(-8).map(s=>({
@@ -1582,9 +1603,9 @@ function renderChat(){
   const oldTop = s.scrollTop;
   $('#coach-dot').className = 'dot ' + (configured() ? 'armed' : '');
   if(!S.chat.length){
-    s.innerHTML = `<div class="empty"><strong>${configured()?'Coach is armed':'Coach is offline'}</strong>${configured()
-      ? 'Ask anything, or tap a prompt below. It already has your last 8 sessions, PRs and notes.'
-      : 'Paste a Gemini key in <b>Setup</b>, or in the CONFIG block at the top of this file. <b>Signals</b> works right now without one.'}</div>`;
+    s.innerHTML = configured()
+      ? `<div class="empty"><strong>Coach is ready</strong>Ask anything, or tap a prompt below. It already has your recent sessions, PRs and notes.</div>`
+      : `<div class="empty"><strong>Connect the AI coach</strong>Add your Gemini API key once, then use this panel only as chat.<br><button class="mini solid" data-open-key="1" style="margin-top:12px">Add API key</button></div>`;
   } else {
     s.innerHTML = S.chat.map(m=>m.role==='user'
       ? `<div class="msg me">${esc(m.content)}</div>`
@@ -1627,7 +1648,7 @@ function applyActions(actions){
     if(a.type==='rename_exercise' && a.name){ hit.item.name = a.name; n++; }
   });
   save('program', S.program);
-  renderDay(); renderSignals();
+  renderDay();
   toast(n?`Plan updated · ${n} change${n>1?'s':''}`:'Nothing matched, plan untouched', n?'ok':'bad');
 }
 
@@ -1753,7 +1774,7 @@ async function callModel(messages, onDelta){
     }
     let j;
     try{ j = JSON.parse(raw); }
-    catch{ throw new Error('Gemini returned invalid JSON. Check the endpoint or proxy response.'); }
+    catch{ throw new Error('Gemini returned invalid JSON. Check the API key and try again.'); }
     const txt = j.output_text || (j.steps||[])
       .filter(step=>step.type==='model_output')
       .flatMap(step=>step.content||[])
@@ -1807,8 +1828,11 @@ async function readSSE(res, pick, onDelta){
 let busy = false;
 async function askCoach(text, silentUser=false){
   if(busy) return;
-  if(!configured()){ switchTab('setup'); toast('Add your Gemini key first','bad'); return; }
-  switchTab('chat');
+  if(!configured()){
+    pendingCoachRequest = {text, silentUser};
+    openApiKeyDialog();
+    return;
+  }
   busy = true; $('#send').disabled = true;
 
   S.chat.push({role:'user', content:text, hidden:silentUser});
@@ -1836,15 +1860,15 @@ async function askCoach(text, silentUser=false){
     });
     const m = acc.match(/```json\s*([\s\S]*?)```/);
     if(m){ try{ const p = JSON.parse(m[1]); if(Array.isArray(p.actions) && p.actions.length) S.chat.at(-1).actions = p.actions; }catch{} }
-    if(!acc.trim()) S.chat.at(-1).content = 'The model returned nothing. Try a different model in Setup.';
+    if(!acc.trim()) S.chat.at(-1).content = 'The model returned nothing. Check the API key and try again.';
   }catch(err){
     const e = String(err.message||err);
-    const hint = /404|no longer available|not found/i.test(e) ? 'That model was retired or is unavailable to this project. Select gemini-3.6-flash in Setup.'
+    const hint = /404|no longer available|not found/i.test(e) ? 'The configured Gemini model is unavailable. Update this site to the newest version.'
               : /400/.test(e) ? 'The request shape or model setting is invalid. Restore the Google endpoint and use a listed model.'
               : /403|401/.test(e) ? 'The key was rejected. Create a new AI Studio auth key and make sure it is allowed to use the Gemini API.'
               : /429/.test(e) ? 'Rate limited. Wait a moment, then retry.'
-              : /Failed to fetch|NetworkError/.test(e) ? 'The browser could not reach the API. Check the endpoint, network, or use the included proxy.'
-              : 'Check the provider, current model name, endpoint, and key in Setup.';
+              : /Failed to fetch|NetworkError/.test(e) ? 'The browser could not reach Gemini. Check your internet connection and try again.'
+              : 'Check your Gemini API key and internet connection.';
     S.chat.at(-1).content = `Could not reach the model.\n\n\`${e}\`\n\n${hint}`;
   }
   busy = false; $('#send').disabled = false;
@@ -1873,98 +1897,106 @@ $('#chips').addEventListener('click', e=>{
   const q = e.target.closest('[data-q]')?.dataset.q; if(q) askCoach(q);
 });
 
-function switchTab(name){
-  $$('.coach-tabs button').forEach(b=>b.setAttribute('aria-selected', String(b.dataset.tab===name)));
-  ['chat','signals','setup'].forEach(t=>$('#tab-'+t).hidden = t!==name);
-  if(name==='signals') renderSignals();
-  if(name==='setup') renderSetup();
+let pendingCoachRequest = null;
+const keyDialog = $('#key-dlg');
+const keyInput = $('#quick-ai-key');
+const keyStatus = $('#key-test-status');
+const keyTestButton = $('#key-test');
+const keySaveButton = $('#key-save');
+const keySkipButton = $('#key-skip');
+
+function setKeyStatus(message='', kind=''){
+  keyStatus.textContent = message;
+  keyStatus.className = `key-status${message ? ' show' : ''}${kind ? ' '+kind : ''}`;
 }
-$('.coach-tabs').addEventListener('click', e=>{
-  const t = e.target.closest('[data-tab]'); if(t) switchTab(t.dataset.tab);
+function openApiKeyDialog({startup=false}={}){
+  keyInput.value = S.ai.key || '';
+  keySkipButton.textContent = configured() ? 'Close' : 'Skip for now';
+  setKeyStatus();
+  $('#key-dlg-dot').className = 'dot ' + (configured() ? 'armed' : '');
+  keyDialog.dataset.startup = startup ? '1' : '0';
+  if(!keyDialog.open) keyDialog.showModal();
+  setTimeout(()=>keyInput.focus({preventScroll:true}), 60);
+}
+function closeApiKeyDialog({skipped=false}={}){
+  if(skipped){
+    sessionStorage.setItem(K+'keyPromptSkipped','1');
+    pendingCoachRequest = null;
+  }
+  if(keyDialog.open) keyDialog.close();
+}
+function storeGeminiKey(){
+  const key = keyInput.value.trim();
+  if(!key){
+    setKeyStatus('Paste a Gemini API key first.', 'bad');
+    keyInput.focus();
+    return false;
+  }
+  S.ai = {provider:CONFIG.provider, endpoint:CONFIG.endpoint, model:CONFIG.model, key};
+  save('ai', S.ai);
+  $('#coach-dot').className = 'dot armed';
+  $('#key-dlg-dot').className = 'dot armed';
+  renderChat();
+  return true;
+}
+function continuePendingCoachRequest(){
+  const pending = pendingCoachRequest;
+  pendingCoachRequest = null;
+  if(pending) setTimeout(()=>askCoach(pending.text, pending.silentUser), 120);
+}
+
+$('#coach-key').addEventListener('click', ()=>openApiKeyDialog());
+coachStream.addEventListener('click', e=>{
+  if(e.target.closest('[data-open-key]')) openApiKeyDialog();
+});
+keySkipButton.addEventListener('click', ()=>closeApiKeyDialog({skipped:true}));
+keySaveButton.addEventListener('click', ()=>{
+  if(!storeGeminiKey()) return;
+  setKeyStatus('Key saved. The coach is ready.', 'good');
+  setTimeout(()=>{ closeApiKeyDialog(); continuePendingCoachRequest(); }, 420);
+});
+keyTestButton.addEventListener('click', async ()=>{
+  if(!storeGeminiKey()) return;
+  keyTestButton.disabled = true;
+  keySaveButton.disabled = true;
+  keySkipButton.disabled = true;
+  setKeyStatus('Testing the Gemini connection…', 'wait');
+  try{
+    let reply = '';
+    await callModel([
+      {role:'system',content:'Reply with exactly: ready'},
+      {role:'user',content:'ping'}
+    ], chunk=>{ reply += chunk; });
+    setKeyStatus(`${S.ai.model} responded${reply.trim() ? `: ${reply.trim().slice(0,60)}` : '.'}`, 'good');
+    setTimeout(()=>{ closeApiKeyDialog(); continuePendingCoachRequest(); }, 900);
+  }catch(err){
+    const message = String(err.message || err);
+    setKeyStatus(`Connection failed: ${message.slice(0,180)}`, 'bad');
+  }finally{
+    keyTestButton.disabled = false;
+    keySaveButton.disabled = false;
+    keySkipButton.disabled = false;
+  }
+});
+keyInput.addEventListener('keydown', e=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    keyTestButton.click();
+  }
+});
+keyDialog.addEventListener('cancel', e=>{
+  e.preventDefault();
+  closeApiKeyDialog({skipped:true});
+});
+keyDialog.addEventListener('click', e=>{
+  if(e.target===keyDialog) closeApiKeyDialog({skipped:true});
 });
 
-function renderSetup(){
-  const p = preset();
-  const state = configured()
-    ? `<div class="keystate good">Key saved in this browser. Other devices need it pasted again.</div>`
-    : `<div class="keystate warnk">No key yet. Coach is offline.</div>`;
-
-  $('#tab-setup').innerHTML = `
-    ${state}
-    <label><span class="lb">Provider</span>
-      <select id="ai-provider">${Object.entries(PRESETS).map(([k,v])=>`<option value="${k}" ${S.ai.provider===k?'selected':''}>${v.label}</option>`).join('')}</select>
-    </label>
-    <label><span class="lb">Model</span>
-      ${p.models
-        ? `<select id="ai-model">${p.models.map(m=>`<option ${S.ai.model===m?'selected':''}>${m}</option>`).join('')}</select>`
-        : `<input id="ai-model" value="${esc(S.ai.model)}">`}
-    </label>
-    <label><span class="lb">Endpoint</span><input id="ai-endpoint" value="${esc(S.ai.endpoint)}"></label>
-    ${p.needsKey?`<label><span class="lb">API key</span><input id="ai-key" type="password" value="${esc(S.ai.key)}" placeholder="AIza..."></label>`:''}
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="mini solid" id="ai-save">Save</button>
-      <button class="mini" id="ai-test">Test</button>
-      <button class="mini ghost" id="ai-clear">Clear chat</button>
-    </div>
-    ${p.keyUrl?`<p class="fine">Free key: <a href="${p.keyUrl}" target="_blank" rel="noopener">aistudio.google.com/apikey</a>.</p>`:''}
-    <p class="fine">For personal/local use, the key is stored only in this browser. For a public deployment, use the proxy below so the key is not exposed to visitors.</p>
-    <details><summary>HTTP proxy for standard Gemini (not Live)</summary><pre>${esc(WORKER)}</pre>
-    <button class="mini" id="copy-worker" style="margin-top:8px">Copy worker code</button></details>`;
-
-  $('#ai-provider').onchange = e=>{
-    const k = e.target.value, pr = PRESETS[k];
-    S.ai = {...S.ai, provider:k, endpoint:pr.endpoint, model:pr.model, baked:false};
-    save('ai',S.ai); renderSetup();
-  };
-  $('#ai-save').onclick = ()=>{
-    S.ai.endpoint = $('#ai-endpoint').value.trim();
-    S.ai.model = normalizeGeminiModel($('#ai-model').value);
-    if($('#ai-key')) S.ai.key = $('#ai-key').value.trim();
-    save('ai',S.ai); toast('Coach armed','ok'); switchTab('chat'); renderChat();
-  };
-  $('#ai-test').onclick = async ()=>{
-    $('#ai-save').click();
-    toast('Pinging the model...');
-    try{ await callModel([{role:'system',content:'Reply with exactly: ready'},{role:'user',content:'ping'}], ()=>{}); toast(`${S.ai.model} responded. Coach is live.`,'ok'); }
-    catch(err){ toast(String(err.message||err).slice(0,110),'bad'); }
-  };
-  $('#ai-clear').onclick = ()=>{ S.chat=[]; save('chat',[]); renderChat(); toast('Chat cleared'); };
-  $('#copy-worker').onclick = ()=>{ navigator.clipboard?.writeText(WORKER); toast('Copied','ok'); };
+function promptForApiKeyAtStartup(){
+  if(configured()) return;
+  if(sessionStorage.getItem(K+'keyPromptSkipped')==='1') return;
+  setTimeout(()=>openApiKeyDialog({startup:true}), 260);
 }
-
-const WORKER = `// worker.js — Cloudflare Worker proxy; set GEMINI_API_KEY as a secret
-export default {
-  async fetch(req, env) {
-    const cors = {
-      "access-control-allow-origin": "*",
-      "access-control-allow-headers": "content-type",
-      "access-control-allow-methods": "POST,OPTIONS"
-    };
-    if (req.method === "OPTIONS") return new Response(null, { headers: cors });
-    if (req.method !== "POST") return new Response("Method not allowed", { status: 405, headers: cors });
-    if (!env.GEMINI_API_KEY) return new Response("Missing GEMINI_API_KEY secret", { status: 500, headers: cors });
-
-    let body;
-    try { body = await req.json(); }
-    catch { return new Response("Invalid JSON", { status: 400, headers: cors }); }
-
-    body.model = new URL(req.url).searchParams.get("model") || body.model || "gemini-3.6-flash";
-    body.store = false;
-
-    const up = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-goog-api-key": env.GEMINI_API_KEY
-      },
-      body: JSON.stringify(body)
-    });
-    return new Response(up.body, {
-      status: up.status,
-      headers: { ...cors, "content-type": up.headers.get("content-type") || "application/json" }
-    });
-  }
-}`;
 
 $('#btn-export').onclick = ()=>{
   const blob = new Blob([JSON.stringify({program:S.program,log:S.log,sessions:S.sessions,prs:S.prs},null,2)],{type:'application/json'});
@@ -1987,31 +2019,6 @@ $('#btn-wipe').onclick = ()=>{
   if(!confirm('Wipe every session, PR and plan change on this device?')) return;
   Object.keys(localStorage).filter(k=>k.startsWith(K)).forEach(k=>localStorage.removeItem(k));
   location.reload();
-};
-
-$('#btn-sample').onclick = ()=>{
-  if(S.sessions.length && !confirm('This adds 6 weeks of sample history on top of your data. Continue?')) return;
-  const plan = [['a',0],['c',2],['b',4]];
-  for(let w=6; w>=1; w--){
-    plan.forEach(([day,off])=>{
-      const date = iso(new Date(Date.now() - ((w*7)-off)*86400000));
-      let vol=0, sets=0, reps=0;
-      allItems(day).forEach((it,idx)=>{
-        if(idx>5) return;
-        const base = 12 + idx*4 + (6-w)*1.5;
-        const arr = Array.from({length:it.sets},()=>({w:round1(base+Math.random()*2), r:8+Math.floor(Math.random()*4)}));
-        (S.log[it.id] ||= []).push({date, sets:arr});
-        arr.forEach(s=>{ vol += s.w*s.r; sets++; reps += s.r;
-          const e = e1rm(s.w,s.r);
-          if(!S.prs[it.id] || e > S.prs[it.id].e1rm) S.prs[it.id] = {w:s.w,r:s.r,e1rm:round1(e),date,name:it.name};
-        });
-      });
-      S.sessions.push({date, day, vol:Math.round(vol), sets, reps, mins:52+Math.floor(Math.random()*20), notes: w===1&&day==='a' ? 'Right shoulder tight on the second press set. Sleep was bad.' : ''});
-    });
-  }
-  S.sessions.sort((a,b)=>a.date.localeCompare(b.date));
-  save('log',S.log); save('sessions',S.sessions); save('prs',S.prs);
-  renderAll(); toast('Six weeks of sample history loaded','ok');
 };
 
 function syncViewportHeight(){
@@ -2134,7 +2141,7 @@ function renderAll(){
   renderHeat(); renderDay(); renderRecords(); renderChat();
 }
 renderAll();
-switchTab('chat');
+promptForApiKeyAtStartup();
 </script>
 </body>
 </html>
