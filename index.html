@@ -628,10 +628,12 @@ dialog::backdrop{background:oklch(0.1 0.01 62 / 0.72)}
 .coach-head-actions{margin-left:auto;display:flex;gap:7px}
 .coach-sheet-backdrop{display:block;position:fixed;inset:0;z-index:300;background:oklch(0.08 0.01 62 / .54);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .24s ease,visibility 0s linear .24s}
 .coach-sheet-backdrop.is-open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .24s ease,visibility 0s}
-.fab{display:flex;right:max(16px,env(safe-area-inset-right));left:auto;bottom:max(18px,env(safe-area-inset-bottom));z-index:320;width:52px;height:52px;min-height:52px;padding:0;border-radius:16px}
+.fab{display:flex;right:max(16px,env(safe-area-inset-right));left:auto;bottom:max(18px,env(safe-area-inset-bottom));z-index:320;width:52px;height:52px;min-height:52px;padding:0;border-radius:16px;transition:transform .22s var(--quart),background .18s,box-shadow .18s,opacity .18s ease,visibility 0s linear 0s}
 .fab:active{transform:scale(.95)}
 .fab span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-body.coach-open .fab{background:var(--ink-2);color:var(--text);box-shadow:0 14px 40px rgba(0,0,0,.48),0 0 0 1px var(--line) inset}
+/* The coach already has a close button in its header. Hide the floating launcher
+   while the drawer is open so it can never cover the composer/send button. */
+body.coach-open .fab{opacity:0;visibility:hidden;pointer-events:none;transform:scale(.82);transition:transform .18s var(--quart),opacity .14s ease,visibility 0s linear .14s}
 body.coach-open .fab-icon-chat{display:none}
 body.coach-open .fab-icon-close{display:block}
 
