@@ -280,11 +280,25 @@ button{background:none;border:0;cursor:pointer}
 .prep-card[open] .prep-chev{transform:rotate(180deg);color:var(--text-2)}
 .prep-body{border-top:1px solid var(--line-soft);animation:prepIn .24s var(--exp)}
 @keyframes prepIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-.prep ol{list-style:none;padding:10px 13px 13px;display:grid;gap:7px;counter-reset:li}
-.prep li{font-size:.8125rem;color:var(--text-2);display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;align-items:start;line-height:1.45}
-.prep li::before{content:counter(li,decimal-leading-zero);counter-increment:li;width:24px;height:24px;border-radius:7px;background:var(--ink-3);display:grid;place-items:center;font-family:var(--mono);font-size:.625rem;color:var(--text-3);margin-top:-1px}
-.prep-card.warm li:first-child::before{color:var(--ember-ink)}
-.prep-card.cool li:last-child::before{color:var(--jade)}
+.prep ol{list-style:none;padding:9px 10px 11px;display:grid;gap:5px}
+.prep li{display:block;min-width:0}
+.prep-step{width:100%;min-height:44px;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;text-align:left;padding:7px 8px;border-radius:9px;color:var(--text-2);transition:background .16s var(--quart),color .16s var(--quart),transform .16s var(--quart)}
+.prep-step:hover{background:var(--ink-3);color:var(--text)}
+.prep-step:active{transform:scale(.992)}
+.prep-tick{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--ink-3);display:grid;place-items:center;position:relative;transition:background .2s,border-color .2s,color .2s,transform .2s var(--quart);font-family:var(--mono);font-size:.625rem;color:var(--text-3)}
+.prep-check{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--sans);font-size:.85rem;font-weight:800;opacity:0;transform:scale(.5);transition:opacity .18s,transform .22s var(--exp)}
+.prep-num{transition:opacity .15s,transform .18s var(--quart)}
+.prep-step-copy{line-height:1.42;transition:opacity .18s,text-decoration-color .18s}
+.prep-step[aria-pressed="true"] .prep-num{opacity:0;transform:scale(.6)}
+.prep-step[aria-pressed="true"] .prep-check{opacity:1;transform:scale(1)}
+.prep-step[aria-pressed="true"] .prep-step-copy{opacity:.62;text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:var(--text-3)}
+.prep-card.warm .prep-step[aria-pressed="true"] .prep-tick{background:var(--ember-wash);border-color:var(--ember-dim);color:var(--ember-ink)}
+.prep-card.cool .prep-step[aria-pressed="true"] .prep-tick{background:var(--jade-wash);border-color:var(--jade);color:var(--jade)}
+.prep-step.pop .prep-tick{animation:prepPop .32s var(--quart)}
+@keyframes prepPop{0%{transform:scale(1)}45%{transform:scale(1.16)}100%{transform:scale(1)}}
+.prep-card.prep-complete{border-color:var(--line)}
+.prep-card.warm.prep-complete .prep-count{color:var(--ember-ink);border-color:var(--ember-dim);background:var(--ember-wash)}
+.prep-card.cool.prep-complete .prep-count{color:var(--jade);border-color:var(--jade);background:var(--jade-wash)}
 @media(max-width:640px){
   .prep{display:grid;grid-template-columns:1fr;gap:8px}
   .prep-card{width:100%;min-width:0}
@@ -935,14 +949,14 @@ body.coach-open .fab-icon-close{display:block}
         <div class="review-block">
           <div class="review-top">
             <div><div class="review-kicker">Last session</div><div class="review-meta" id="session-review-meta">No session yet</div></div>
-            <button class="mini" id="btn-session-review" type="button">Review</button>
+            <button class="mini" id="btn-session-review" type="button">Full review</button>
           </div>
           <div class="review-body" id="session-review-body">Finish a workout and its review will appear here.</div>
         </div>
         <div class="review-block">
           <div class="review-top">
             <div><div class="review-kicker">This week</div><div class="review-meta" id="weekly-review-meta">No sessions this week</div></div>
-            <button class="mini" id="btn-weekly-review" type="button">Review week</button>
+            <button class="mini" id="btn-weekly-review" type="button">Full week review</button>
           </div>
           <div class="review-body" id="weekly-review-body">Your weekly trend review will build from your logged sessions.</div>
         </div>
@@ -957,6 +971,7 @@ body.coach-open .fab-icon-close{display:block}
             <div>
               <div class="settings-title">AI coach connection</div>
               <div class="settings-copy" id="ai-connection-copy">Not connected</div>
+              <div class="settings-copy" id="ai-usage-copy">Last request tokens: —</div>
             </div>
             <button class="mini" id="btn-ai-settings" type="button">API key</button>
           </div>
@@ -1308,8 +1323,25 @@ if(calm){ heat = 0.35; paintBG(0); } else { requestAnimationFrame(frame); }
    ══════════════════════════════════════════════════════════════════ */
 function draft(day=S.day){
   let d = S.drafts[day];
-  if(!d || d.date !== today()) { d = {date:today(), start:null, ex:{}, notes:''}; S.drafts[day]=d; }
+  if(!d || d.date !== today()) {
+    d = {date:today(), start:null, ex:{}, notes:'', prep:{warmup:[],cooldown:[]}};
+    S.drafts[day]=d;
+  }
+  // Backward-compatible migration for drafts created before prep-step tracking existed.
+  if(!d.ex || typeof d.ex !== 'object') d.ex = {};
+  if(typeof d.notes !== 'string') d.notes = '';
+  if(!d.prep || typeof d.prep !== 'object') d.prep = {warmup:[],cooldown:[]};
+  if(!Array.isArray(d.prep.warmup)) d.prep.warmup = [];
+  if(!Array.isArray(d.prep.cooldown)) d.prep.cooldown = [];
   return d;
+}
+function prepState(day=S.day){
+  const d=draft(day), p=S.program[day];
+  for(const kind of ['warmup','cooldown']){
+    const total=(p?.[kind]||[]).length, cur=d.prep[kind]||[];
+    d.prep[kind]=Array.from({length:total},(_,i)=>!!cur[i]);
+  }
+  return d.prep;
 }
 function setsOf(day, item){
   const d = draft(day);
@@ -1549,15 +1581,29 @@ function exRow(item, idx){
   </article>`;
 }
 
+function renderPrep(p=S.program[S.day]){
+  const state=prepState();
+  for(const kind of ['warmup','cooldown']){
+    const steps=p[kind]||[], done=state[kind].filter(Boolean).length, total=steps.length;
+    const id=kind==='warmup'?'warmup':'cooldown';
+    const card=$(`.prep-card.${kind==='warmup'?'warm':'cool'}`);
+    if(card) card.classList.toggle('prep-complete', total>0 && done===total);
+    $(`#${id}-count`).textContent = total ? `${done}/${total} done` : 'No steps';
+    $(`#${id}`).innerHTML = steps.map((x,i)=>`<li>
+      <button type="button" class="prep-step" data-prep-kind="${kind}" data-prep-index="${i}" aria-pressed="${state[kind][i]}" aria-label="${state[kind][i]?'Mark incomplete':'Mark complete'}: ${esc(x)}">
+        <span class="prep-tick" aria-hidden="true"><span class="prep-num">${String(i+1).padStart(2,'0')}</span><span class="prep-check">✓</span></span>
+        <span class="prep-step-copy">${esc(x)}</span>
+      </button>
+    </li>`).join('');
+  }
+}
+
 function renderDay(){
   const p = S.program[S.day];
   $('#day-key').textContent = 'Day '+S.day.toUpperCase();
   $('#day-name').textContent = p.name;
   $('#day-focus').textContent = p.focus;
-  $('#warmup').innerHTML = p.warmup.map(x=>`<li>${esc(x)}</li>`).join('');
-  $('#cooldown').innerHTML = p.cooldown.map(x=>`<li>${esc(x)}</li>`).join('');
-  $('#warmup-count').textContent = `${p.warmup.length} ${p.warmup.length===1?'step':'steps'}`;
-  $('#cooldown-count').textContent = `${p.cooldown.length} ${p.cooldown.length===1?'step':'steps'}`;
+  renderPrep(p);
 
   let i = 0;
   $('#blocks').innerHTML = p.blocks.map(b=>`
@@ -1606,6 +1652,25 @@ $$('#prep details').forEach(card=>card.addEventListener('toggle', ()=>{
   if(!card.open) return;
   $$('#prep details').forEach(other=>{ if(other!==card && other.open) other.open=false; });
 }));
+
+// Warm-up and cool-down steps are real session progress: tap any row to check/uncheck it.
+$('#prep').addEventListener('click', e=>{
+  const btn=e.target.closest('[data-prep-kind]');
+  if(!btn) return;
+  const kind=btn.dataset.prepKind, index=+btn.dataset.prepIndex;
+  if(!['warmup','cooldown'].includes(kind) || !Number.isInteger(index)) return;
+  const state=prepState();
+  if(index<0 || index>=state[kind].length) return;
+  state[kind][index]=!state[kind][index];
+  persistDraft();
+  const nowDone=state[kind][index], total=state[kind].length, done=state[kind].filter(Boolean).length;
+  renderPrep(S.program[S.day]);
+  const fresh=$(`#${kind} [data-prep-index="${index}"]`);
+  if(nowDone && fresh){ fresh.classList.add('pop'); setTimeout(()=>fresh.classList.remove('pop'),360); }
+  if(nowDone && total && done===total){
+    toast(kind==='warmup' ? 'Warm-up complete · ready for the work sets' : 'Cool-down complete · recovery steps done', 'ok');
+  }
+});
 
 $('#daybar').addEventListener('click', e=>{
   const b = e.target.closest('[data-day]'); if(!b) return;
@@ -1746,7 +1811,12 @@ $('#btn-finish').addEventListener('click', ()=>{
     exercises.push({id:item.id,name:item.name,target:`${item.sets}x${item.reps}`,sets:clean});
   });
   const mins = d.start ? Math.round((Date.now()-d.start)/60000) : null;
-  const session={id:`${d.date}-${day}-${Date.now()}`,date:d.date,day,vol:Math.round(vol),sets,reps,mins,notes:d.notes||'',exercises};
+  const prep=prepState(day);
+  const prepProgress={
+    warmup:{done:prep.warmup.filter(Boolean).length,total:(S.program[day].warmup||[]).length},
+    cooldown:{done:prep.cooldown.filter(Boolean).length,total:(S.program[day].cooldown||[]).length}
+  };
+  const session={id:`${d.date}-${day}-${Date.now()}`,date:d.date,day,vol:Math.round(vol),sets,reps,mins,notes:d.notes||'',prep:prepProgress,exercises};
   S.sessions.push(session);
   save('log',S.log); save('sessions',S.sessions);
   delete S.drafts[day]; persistDraft();
@@ -1834,7 +1904,8 @@ function localSessionReview(session){
   const best=changes.find(x=>x.prev>0) || changes[0];
   const targets=ex.slice(0,3).map(x=>{const item=findItem(x.id)?.item; return item?`${item.name}: ${nextTarget(item).short.replace(/^Next ·\s*/, '')}`:null}).filter(Boolean);
   const strength=best?.prev?`Best strength signal: **${best.name} e1RM ${best.delta>=0?'+':''}${round1(best.delta)} kg vs last time**.`:best?.cur?`First useful strength baseline: **${best.name} e1RM ${Math.round(best.cur)} kg**.`:'Log weight and reps on your main lifts to build strength trends.';
-  return `**${session.sets} sets · ${fmtKg(session.vol||0)} kg${session.mins?` · ${session.mins} min`:''}.**${avgSessionRir==null?'':` Average effort was ${round1(avgSessionRir)} RIR.`}
+  const prepNote=session.prep ? ` Warm-up ${session.prep.warmup?.done||0}/${session.prep.warmup?.total||0}; cool-down ${session.prep.cooldown?.done||0}/${session.prep.cooldown?.total||0}.` : '';
+  return `**${session.sets} sets · ${fmtKg(session.vol||0)} kg${session.mins?` · ${session.mins} min`:''}.**${avgSessionRir==null?'':` Average effort was ${round1(avgSessionRir)} RIR.`}${prepNote}
 
 ${strength}${targets.length?`
 
@@ -1858,15 +1929,35 @@ function renderReviews(){
   $('#session-review-meta').textContent=last?`${nice(last.date)} · Day ${last.day.toUpperCase()} ${S.program[last.day]?.name||''}`:'No session yet';
   $('#weekly-review-meta').textContent=week.length?`${nice(ws)} → today · ${week.length} session${week.length===1?'':'s'}`:'No sessions this week';
   const sr=last?S.reviews.sessions[reviewSessionKey(last)]:null, wr=S.reviews.weeks[ws];
-  $('#session-review-body').innerHTML=sr?.loading?`<div class="review-loading">Coach is reviewing the session…</div>`:sr?.text?md(sr.text):(last?md(localSessionReview(last)):'Finish a workout and its review will appear here.');
-  $('#weekly-review-body').innerHTML=wr?.loading?`<div class="review-loading">Coach is reviewing the week…</div>`:wr?.text?md(wr.text):(week.length?md(localWeeklyReview(ws)):'Your weekly trend review will build from your logged sessions.');
+  $('#session-review-body').innerHTML=sr?.loading?`<div class="review-loading">Coach is doing a full session review…</div>`:sr?.text?md(sr.text):(last?md(localSessionReview(last)):'Finish a workout and its review will appear here.');
+  $('#weekly-review-body').innerHTML=wr?.loading?`<div class="review-loading">Coach is doing a full week review…</div>`:wr?.text?md(wr.text):(week.length?md(localWeeklyReview(ws)):'Your weekly trend review will build from your logged sessions.');
   $('#btn-session-review').disabled=!last;
   $('#btn-weekly-review').disabled=!week.length;
 }
 async function generateReviewAI(kind, payload){
-  const system=`You write compact strength-training reviews from logged data. Be specific and numerical. No emoji. Do not output JSON. Use at most 130 words. Give: 1) what happened, 2) one important pattern, 3) one exact next action. Treat RIR 0-1 as near failure, 2-3 as productive working effort, and 4+ as easy. Do not diagnose injuries.`;
+  const isWeek = kind === 'weekly';
+  const system=`You are doing a FULL ${isWeek?'weekly':'session'} strength-training review from logged data. Accuracy and completeness matter more than brevity. No emoji. Do not output JSON and do not invent missing numbers.
+
+Review requirements:
+- Use the athlete's actual weights, reps, RIR, volume, notes, prep completion, PRs and previous comparable sessions whenever present.
+- Do not skip an exercise that has logged working sets. Review every logged exercise individually.
+- Compare performance with the supplied previous ${isWeek?'week and recent lift history':'same-day sessions'} where possible.
+- Explain whether each important lift improved, held, regressed, or cannot yet be judged.
+- Treat RIR 0-1 as near failure, 2 as the normal heavy-work target, 3 as conservative, and 4+ as relatively easy.
+- Separate load progression from fatigue: do not recommend adding weight when the bottom of the rep range is missed at 0-1 RIR.
+- Use the app's deterministic nextTarget when supplied unless the data clearly justifies overriding it.
+- End with exact targets for the next relevant workout: exercise, load if supported by data, sets, reps and RIR target.
+- If a kilogram target cannot be supported by logged history, say exactly what first working set should be used to establish it instead of guessing.
+- Do not diagnose injuries. If notes describe sharp/joint/nerve pain, recommend stopping that movement and seeking professional assessment if it persists.
+
+Format with clear headings. ${isWeek?'Cover: Week at a glance; Session-by-session; Lift-by-lift trends; Volume/frequency/effort; PRs & stalls; Recovery/notes; Exact plan for next week.':'Cover: Session at a glance; Exercise-by-exercise; Strength/progression; Effort/RIR; Warm-up & cool-down; Notes/recovery; Exact targets for the next session.'}
+Use as much detail as the logged data supports; do not shorten the review just to hit a word target.`;
   let text='';
-  await callModel([{role:'system',content:system},{role:'user',content:`${kind.toUpperCase()} DATA:\n${JSON.stringify(payload)}`}],chunk=>{text+=chunk;});
+  await callModel(
+    [{role:'system',content:system},{role:'user',content:`${kind.toUpperCase()} DATA:\n${JSON.stringify(payload)}`}],
+    chunk=>{text+=chunk;},
+    {maxOutputTokens:7000, thinkingLevel:'medium', purpose:`${kind}-review`}
+  );
   return text.trim();
 }
 async function generateSessionReview(session,{auto=false}={}){
@@ -1875,8 +1966,17 @@ async function generateSessionReview(session,{auto=false}={}){
   S.reviews.sessions[key]={text:fallback,loading:configured(),updated:Date.now()}; save('reviews',S.reviews); renderReviews();
   if(!configured()){ if(!auto) openApiKeyDialog(); return; }
   try{
-    const previous=S.sessions.filter(s=>s.day===session.day && s!==session).slice(-3);
-    const text=await generateReviewAI('session',{session,previousSameDay:previous,signals:buildSignals().slice(0,4).map(x=>({title:x.t,detail:x.d.replace(/<[^>]+>/g,'')}))});
+    const previous=S.sessions.filter(s=>s.day===session.day && s!==session).slice(-4);
+    const dayItems=allItems(session.day).map(it=>({
+      exercise:it.name, prescription:`${it.sets} x ${it.reps}`, restSeconds:it.rest, strength:!!it.strength,
+      nextTarget:nextTarget(it),
+      recentHistory:history(it.id).slice(-5)
+    }));
+    const text=await generateReviewAI('session',{
+      session, previousSameDay:previous, dayProgram:dayItems,
+      relevantPRs:Object.fromEntries(allItems(session.day).filter(it=>S.prs[it.id]).map(it=>[it.name,S.prs[it.id]])),
+      signals:buildSignals().map(x=>({title:x.t,detail:x.d.replace(/<[^>]+>/g,'')}))
+    });
     S.reviews.sessions[key]={text:text||fallback,loading:false,updated:Date.now()}; save('reviews',S.reviews); renderReviews();
     toast('Session review ready','ok');
   }catch(err){ S.reviews.sessions[key]={text:fallback,loading:false,error:String(err.message||err),updated:Date.now()}; save('reviews',S.reviews); renderReviews(); if(!auto) toast('AI review failed · showing local review','bad'); }
@@ -1889,7 +1989,18 @@ async function generateWeeklyReview(){
   try{
     const priorStart=iso(new Date(new Date(ws+'T00:00').getTime()-7*86400000));
     const prior=S.sessions.filter(s=>daysBetween(priorStart,s.date)>=0 && daysBetween(s.date,ws)>0);
-    const text=await generateReviewAI('weekly',{weekStart:ws,sessions,priorWeek:prior,prs:Object.values(S.prs).filter(p=>daysBetween(ws,p.date)>=0),signals:buildSignals()});
+    const liftTrends={};
+    ['a','b','c'].forEach(day=>allItems(day).forEach(it=>{
+      liftTrends[it.name]={
+        day:day.toUpperCase(), prescription:`${it.sets} x ${it.reps}`, restSeconds:it.rest, strength:!!it.strength,
+        nextTarget:nextTarget(it), recentHistory:history(it.id).slice(-6), pr:S.prs[it.id]||null
+      };
+    }));
+    const text=await generateReviewAI('weekly',{
+      weekStart:ws, sessions, priorWeek:prior, liftTrends,
+      prs:Object.values(S.prs).filter(p=>daysBetween(ws,p.date)>=0 && daysBetween(p.date,today())>=0),
+      signals:buildSignals()
+    });
     S.reviews.weeks[ws]={text:text||fallback,loading:false,updated:Date.now()}; save('reviews',S.reviews); renderReviews(); toast('Weekly review ready','ok');
   }catch(err){ S.reviews.weeks[ws]={text:fallback,loading:false,error:String(err.message||err),updated:Date.now()}; save('reviews',S.reviews); renderReviews(); toast('AI review failed · showing local review','bad'); }
 }
@@ -2009,13 +2120,62 @@ function snapshot(){
   });
 }
 
+function coachReviewMode(text){
+  const q=String(text||'').toLowerCase();
+  const reviewWord=/\b(review|analyse|analyze|analysis|audit|assess|check|evaluate|break\s*down|summary|summarize)\b/.test(q);
+  const dataWord=/\b(data|training|progress|numbers|history|workout|session|week|weekl|program|performance)\b/.test(q);
+  if(!reviewWord && !(/\bhow am i doing\b|\blook at my data\b/.test(q))) return null;
+  if(/\bweek|weekly|this week|last week\b/.test(q)) return 'weekly';
+  if(/\blast session|last workout|recent session|recent workout|session|workout\b/.test(q)) return 'session';
+  if(dataWord || reviewWord) return 'full';
+  return null;
+}
+
+function fullReviewContext(mode='full'){
+  const last=S.sessions.at(-1)||null;
+  const ws=weekStart();
+  const currentWeek=sessionsThisWeek(ws);
+  const priorStart=iso(new Date(new Date(ws+'T00:00').getTime()-7*86400000));
+  const priorWeek=S.sessions.filter(s=>daysBetween(priorStart,s.date)>=0 && daysBetween(s.date,ws)>0);
+  const liftTrends={};
+  ['a','b','c'].forEach(day=>allItems(day).forEach(it=>{
+    liftTrends[it.name]={
+      day:day.toUpperCase(),
+      prescription:{sets:it.sets,reps:it.reps,restSeconds:it.rest,strength:!!it.strength},
+      nextTarget:nextTarget(it),
+      pr:S.prs[it.id]||null,
+      recentHistory:history(it.id).slice(-6)
+    };
+  }));
+  const sameDayHistory=last ? S.sessions.filter(s=>s.day===last.day && s!==last).slice(-4) : [];
+  const base={
+    today:today(), mode, lastSession:last, previousComparableSessions:sameDayHistory,
+    currentWeek:{weekStart:ws,sessions:currentWeek}, priorWeek:{weekStart:priorStart,sessions:priorWeek},
+    liftTrends, signals:buildSignals().map(x=>({title:x.t,detail:x.d.replace(/<[^>]+>/g,'')})),
+    consistency:(()=>{ const st=streaks(); return {totalSessions:S.sessions.length,currentStreak:st.live,bestStreak:st.best,last7:S.sessions.filter(s=>daysBetween(s.date,today())<7).length}; })()
+  };
+  if(mode==='session') return JSON.stringify({today:base.today,mode,lastSession:last,previousComparableSessions:sameDayHistory,liftTrends,signals:base.signals});
+  if(mode==='weekly') return JSON.stringify({today:base.today,mode,currentWeek:base.currentWeek,priorWeek:base.priorWeek,liftTrends,signals:base.signals});
+  return JSON.stringify(base);
+}
+
+function reviewSystemAddon(mode){
+  const scope=mode==='session'?'the latest completed session':mode==='weekly'?'the current training week':'the latest session, current week, and recent lift trends';
+  return `\n\nFULL REVIEW MODE — ${scope}.\nThis is a detailed audit, not a short coaching reply. Use the REVIEW DATA supplied in the user message as the primary source. Do not omit logged exercises.\n\nStructure the answer with these sections when data exists:\n1. Overview — sessions/sets/volume/time, warm-up/cool-down completion, average RIR, notes.\n2. Exercise-by-exercise — every logged lift: exact sets, weight, reps, RIR, comparison to prior comparable performance, and whether it improved/held/regressed.\n3. Strength & progression — e1RM/PR/trend evidence and whether the current strength-focused 4-6 / 6-8 prescriptions are working.\n4. Fatigue & effort — identify near-failure sets (0-1 RIR), easy sets (4+), missed rep floors, and any recovery clues from notes.\n5. Balance/frequency — for weekly/full reviews, compare Push/Pull/Legs frequency and meaningful volume patterns.\n6. Exact next targets — list each important exercise with next load (only if supported), sets, rep target and RIR target. Use deterministic nextTarget unless there is a strong numerical reason not to.\n7. Bottom line — 2-4 highest-priority actions.\n\nDo not use vague praise. If the data cannot support a conclusion or exact kilogram number, say that explicitly.`;
+}
+
 const SYSTEM = `You are the strength coach built into this person's training log. You can see every set, note and PR they have recorded.
 
-Voice: direct, concrete, a bit blunt. A good coach, not a wellness app. No hedging, no "listen to your body" filler, no emoji. Short paragraphs, 120 words max unless they ask for a full program.
+Voice: direct, concrete, a bit blunt. A good coach, not a wellness app. No hedging, no "listen to your body" filler, no emoji. Use short paragraphs and clear headings when useful.
+
+Response depth:
+- For a simple question, stay efficient and answer it directly.
+- For any request to review, analyze, audit, check, summarize, or assess training data, DO NOT be brief. Perform a complete numerical review of the requested session/week/data and cover every logged exercise that matters. There is no artificial word limit for reviews.
+- A review may contain several findings and several next-session targets; the "one directive" rule below applies only to ordinary coaching questions.
 
 Rules:
 - Always cite their actual numbers. "Your bench e1RM went 41 -> 44 in three weeks" beats "you're progressing well".
-- Give ONE clear directive per reply: the exact weight, reps or change to make next session.
+- For ordinary questions, finish with one clear directive: the exact weight, reps or change to make next session. For review requests, finish with a complete exact action plan instead.
 - The built-in program is strength-focused: primary lifts are mostly 4-6 reps, secondary strength lifts 6-8, with longer 2-3 minute rests. Accessories stay moderately higher rep where that is more appropriate.
 - For lifts marked as strength work, prefer the app's e1RM-based load target: it converts recent weight/reps/RIR into a heavier low-rep target designed to start around 2 RIR. Do not turn this into max singles.
 - Use RIR when it is logged: 0-1 RIR is near failure, 2 RIR is the normal target for heavy work, 3 RIR is conservative, and 4+ RIR is relatively easy. Do not increase load when the lifter is missing the bottom of the range at 0-1 RIR.
@@ -2228,7 +2388,7 @@ function callGeminiLive(messages, onDelta){
   });
 }
 
-async function callModel(messages, onDelta){
+async function callModel(messages, onDelta, options={}){
   const cfg = S.ai, kind = preset().kind;
   const base = (cfg.endpoint||'').replace(/\/+$/,'');
   const sys = messages[0].content;
@@ -2247,8 +2407,9 @@ async function callModel(messages, onDelta){
       input,
       store: false,
       generation_config: {
-        max_output_tokens: 1600,
-        thinking_level: 'low',
+        // The cap is only a ceiling; raising it does not spend tokens unless the model actually uses them.
+        max_output_tokens: options.maxOutputTokens || 2600,
+        thinking_level: options.thinkingLevel || 'low',
         thinking_summaries: 'none'
       }
     };
@@ -2267,6 +2428,18 @@ async function callModel(messages, onDelta){
     let j;
     try{ j = JSON.parse(raw); }
     catch{ throw new Error('Gemini returned invalid JSON. Check the API key and try again.'); }
+    if(j.usage){
+      S.ai.lastUsage={
+        input:+j.usage.total_input_tokens||0,
+        output:+j.usage.total_output_tokens||0,
+        thought:+j.usage.total_thought_tokens||0,
+        total:+j.usage.total_tokens||0,
+        purpose:options.purpose||'coach',
+        at:Date.now()
+      };
+      save('ai',S.ai);
+      if(typeof renderAppSettings==='function') renderAppSettings();
+    }
     const txt = j.output_text || (j.steps||[])
       .filter(step=>step.type==='model_output')
       .flatMap(step=>step.content||[])
@@ -2334,10 +2507,14 @@ async function askCoach(text, silentUser=false){
   const bubble = $('#stream').lastElementChild;
   bubble.innerHTML = `<div class="who">Coach</div><div class="typing"><i></i><i></i><i></i></div>`;
 
-  const hist = S.chat.filter(m=>m.content).slice(-10).map(({role,content})=>({role,content}));
+  const reviewMode=coachReviewMode(text);
+  // Keep normal chat relatively lean, but automatically switch to a detailed, richer data payload for review requests.
+  const hist = S.chat.filter(m=>m.content).slice(reviewMode ? -6 : -10).map(({role,content})=>({role,content}));
+  const dataLabel=reviewMode?'REVIEW DATA (json)':'TRAINING DATA (json)';
+  const dataPayload=reviewMode?fullReviewContext(reviewMode):snapshot();
   const messages = [
-    {role:'system', content: SYSTEM},
-    {role:'user', content: `TRAINING DATA (json):\n${snapshot()}`},
+    {role:'system', content: SYSTEM + (reviewMode ? reviewSystemAddon(reviewMode) : '')},
+    {role:'user', content: `${dataLabel}:\n${dataPayload}`},
     {role:'assistant', content:'Got it. I have your numbers.'},
     ...hist
   ];
@@ -2349,7 +2526,10 @@ async function askCoach(text, silentUser=false){
       S.chat.at(-1).content = acc;
       bubble.innerHTML = `<div class="who">Coach</div>${md(acc)}`;
       scrollCoachToBottom();
-    });
+    }, reviewMode
+      ? {maxOutputTokens:8000, thinkingLevel:'medium', purpose:`coach-${reviewMode}-review`}
+      : {maxOutputTokens:2600, thinkingLevel:'low', purpose:'coach-chat'}
+    );
     const m = acc.match(/```json\s*([\s\S]*?)```/);
     if(m){ try{ const p = JSON.parse(m[1]); if(Array.isArray(p.actions) && p.actions.length) S.chat.at(-1).actions = p.actions; }catch{} }
     if(!acc.trim()) S.chat.at(-1).content = 'The model returned nothing. Check the API key and try again.';
@@ -2384,10 +2564,13 @@ const keyTestButton = $('#key-test');
 const keySaveButton = $('#key-save');
 const keySkipButton = $('#key-skip');
 const aiConnectionCopy = $('#ai-connection-copy');
+const aiUsageCopy = $('#ai-usage-copy');
 function renderAppSettings(){
   const on = configured();
   aiConnectionCopy.textContent = on ? `${S.ai.model} connected in this browser` : 'Not connected';
   aiConnectionCopy.className = `settings-copy ${on ? 'good' : 'warn'}`;
+  const u=S.ai.lastUsage;
+  aiUsageCopy.textContent = u ? `Last AI request: ${u.input.toLocaleString()} input + ${u.output.toLocaleString()} output${u.thought?` + ${u.thought.toLocaleString()} thought`:''} tokens` : 'Last request tokens: —';
   $('#btn-ai-settings').textContent = on ? 'Manage key' : 'Add key';
 }
 
@@ -2418,7 +2601,7 @@ function storeGeminiKey(){
     keyInput.focus();
     return false;
   }
-  S.ai = {provider:CONFIG.provider, endpoint:CONFIG.endpoint, model:CONFIG.model, key};
+  S.ai = {provider:CONFIG.provider, endpoint:CONFIG.endpoint, model:CONFIG.model, key, lastUsage:S.ai.lastUsage||null};
   save('ai', S.ai);
   $('#coach-dot').className = 'dot armed';
   $('#key-dlg-dot').className = 'dot armed';
@@ -2459,7 +2642,7 @@ keyTestButton.addEventListener('click', async ()=>{
     await callModel([
       {role:'system',content:'Reply with exactly: ready'},
       {role:'user',content:'ping'}
-    ], chunk=>{ reply += chunk; });
+    ], chunk=>{ reply += chunk; }, {maxOutputTokens:32, thinkingLevel:'minimal', purpose:'connection-test'});
     setKeyStatus(`${S.ai.model} responded${reply.trim() ? `: ${reply.trim().slice(0,60)}` : '.'}`, 'good');
     setTimeout(()=>{ closeApiKeyDialog(); continuePendingCoachRequest(); }, 900);
   }catch(err){
