@@ -34,6 +34,69 @@
   }
   .design-ui-credit { display: none !important; }
 }
+
+
+/* ══════════════════════════════════════════════════════════════════
+   STRENGTH INTELLIGENCE — readiness, fatigue, goals, swaps, warm-ups
+   ══════════════════════════════════════════════════════════════════ */
+.today-card{margin:0 0 var(--s-4);border:1px solid var(--line-soft);border-radius:var(--r-lg);background:var(--panel);overflow:hidden}
+.today-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;padding:13px 15px;border-bottom:1px solid var(--line-soft)}
+.today-title{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2)}
+.today-score{font-family:var(--mono);font-size:.75rem;font-weight:600;padding:4px 8px;border-radius:7px;background:var(--ink-3);color:var(--text-2);white-space:nowrap}
+.today-score.good{background:var(--jade-wash);color:var(--jade)}
+.today-score.watch{background:var(--gold-wash);color:var(--gold)}
+.today-score.low{background:var(--ember-wash);color:var(--ember-ink)}
+.readiness-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 110px;gap:10px;padding:12px 15px}
+.readiness-field{display:grid;gap:6px;min-width:0}
+.readiness-field .lb{font-size:.63rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);font-weight:700}
+.ready-scale{display:flex;gap:4px}
+.ready-scale button{flex:1;min-width:0;height:30px;border:1px solid var(--line-soft);border-radius:7px;background:var(--panel-2);font-family:var(--mono);font-size:.69rem;color:var(--text-3);transition:.15s}
+.ready-scale button:hover{border-color:var(--line);color:var(--text)}
+.ready-scale button[aria-pressed="true"]{border-color:var(--ember-dim);background:var(--ember-wash);color:var(--ember-ink)}
+.readiness-field input{height:30px;width:100%;padding:5px 8px;border:1px solid var(--line-soft);border-radius:7px;background:var(--panel-2);font-family:var(--mono);font-size:.75rem}
+.today-advice{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:11px 15px;border-top:1px solid var(--line-soft);font-size:.78rem;color:var(--text-2);line-height:1.5}
+.today-advice strong{color:var(--text)}
+.today-advice .actions{display:flex;gap:6px;flex:0 0 auto}
+.fatigue-tag{font-family:var(--mono);font-size:.64rem;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--line);border-radius:6px;padding:3px 6px;color:var(--text-3);white-space:nowrap}
+.fatigue-tag.watch{border-color:var(--gold);color:var(--gold)}
+.fatigue-tag.deload{border-color:var(--ember);color:var(--ember-ink)}
+.fatigue-tag.good{border-color:var(--jade);color:var(--jade)}
+.ex-sub .today-target{color:var(--jade);font-family:var(--mono);font-size:.72rem;font-weight:600}
+.ex-sub .today-target.adjusted{color:var(--gold)}
+.ex-swapped{color:var(--gold);font-family:var(--mono);font-size:.68rem}
+.tool-card{padding:12px;border:1px solid var(--line-soft);border-radius:12px;background:var(--panel);display:grid;gap:10px}
+.tool-card h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3)}
+.ramp-list{display:grid;gap:6px}
+.ramp-row{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:8px 9px;border-radius:8px;background:var(--panel-2);font-size:.78rem}
+.ramp-row .n{font-family:var(--mono);color:var(--text-3)}
+.ramp-row .w{font-family:var(--mono);font-weight:600;color:var(--text)}
+.ramp-row .r{font-family:var(--mono);color:var(--text-3)}
+.plate-result{font-family:var(--mono);font-size:.78rem;line-height:1.7;color:var(--text-2)}
+.swap-grid{display:grid;gap:7px}
+.swap-choice{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;padding:10px 11px;border:1px solid var(--line-soft);border-radius:10px;background:var(--panel);color:var(--text-2)}
+.swap-choice:hover{border-color:var(--ember-dim);color:var(--text)}
+.swap-choice strong{font-size:.83rem;color:inherit}
+.swap-choice span{font-size:.68rem;color:var(--text-3)}
+.goal-list{display:grid}
+.goal-row{padding:12px 15px;border-bottom:1px solid var(--line-soft);display:grid;gap:7px}
+.goal-row:last-child{border-bottom:0}
+.goal-top{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.goal-name{font-size:.83rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.goal-target{font-family:var(--mono);font-size:.75rem;color:var(--gold);white-space:nowrap}
+.goal-progress{height:5px;border-radius:99px;background:var(--ink-3);overflow:hidden}
+.goal-progress i{display:block;height:100%;border-radius:inherit;background:var(--jade);width:var(--p,0%)}
+.goal-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:.65rem;color:var(--text-3)}
+.goal-remove{color:var(--text-3);font-size:.68rem}
+.goal-remove:hover{color:var(--ember-ink)}
+.prep-step-copy .auto-ramp-note{display:block;font-family:var(--mono);font-size:.66rem;color:var(--jade);margin-top:2px}
+@media(max-width:760px){
+  .readiness-grid{grid-template-columns:1fr 1fr;padding:11px 12px}
+  .today-head,.today-advice{padding-left:12px;padding-right:12px}
+  .today-advice{align-items:flex-start;flex-direction:column}
+  .today-advice .actions{width:100%}.today-advice .actions .mini{flex:1}
+}
+@media(max-width:430px){.readiness-grid{grid-template-columns:1fr}.ready-scale button{height:34px}}
+
 </style>
 <script>
 (function () {
@@ -857,6 +920,8 @@ body.coach-open .fab-icon-close{display:block}
         </div>
       </div>
 
+      <div class="today-card" id="today-card" aria-label="Training readiness and fatigue"></div>
+
       <div class="prep" id="prep" aria-label="Session preparation and recovery">
         <details class="prep-card warm" name="prep-accordion">
           <summary>
@@ -937,6 +1002,11 @@ body.coach-open .fab-icon-close{display:block}
           </form>
         </div>
 
+      </div>
+
+      <div class="panel" id="goals-panel">
+        <div class="panel-head"><h3>Strength goals</h3><div class="right"><button class="mini ghost" id="btn-add-goal" type="button">+ Goal</button></div></div>
+        <div class="goal-list" id="goal-list"></div>
       </div>
 
       <div class="panel">
@@ -1115,6 +1185,8 @@ const S = {
   ai:      load('ai', {provider:CONFIG.provider, endpoint:CONFIG.endpoint, model:CONFIG.model, key:CONFIG.key}),
   chat:    load('chat', []),
   reviews: load('reviews', {sessions:{}, weeks:{}}),
+  goals:   load('goals', []),
+  settings:load('settings', {barWeight:20, plates:[25,20,15,10,5,2.5,1.25]}),
   day:     'a'
 };
 
@@ -1162,6 +1234,10 @@ if((load('strengthProgramVersion', 0) || 0) < STRENGTH_PROGRAM_VERSION){
 if(!S.reviews || typeof S.reviews !== 'object') S.reviews = {sessions:{},weeks:{}};
 if(!S.reviews.sessions) S.reviews.sessions = {};
 if(!S.reviews.weeks) S.reviews.weeks = {};
+if(!Array.isArray(S.goals)) S.goals = [];
+if(!S.settings || typeof S.settings!=='object') S.settings={barWeight:20,plates:[25,20,15,10,5,2.5,1.25]};
+if(!Number.isFinite(+S.settings.barWeight)) S.settings.barWeight=20;
+if(!Array.isArray(S.settings.plates) || !S.settings.plates.length) S.settings.plates=[25,20,15,10,5,2.5,1.25];
 
 const GEMINI_MODEL_MIGRATIONS = {
   'gemini-2.5-flash': 'gemini-3.6-flash',
@@ -1219,7 +1295,7 @@ const avg = xs => xs.length ? xs.reduce((a,b)=>a+b,0)/xs.length : null;
 const avgRIR = sets => avg((sets||[]).map(s=>s.rir).filter(v=>v!==''&&v!=null&&Number.isFinite(+v)).map(Number));
 const weekStart = (date=today()) => {const d=new Date(date+'T00:00'); const shift=(d.getDay()+6)%7; d.setDate(d.getDate()-shift); return iso(d)};
 const allItems = day => S.program[day].blocks.flatMap(b=>b.items);
-const findItem = id => {for(const d of ['a','b','c']){const it=allItems(d).find(x=>x.id===id); if(it) return {item:it,day:d}} return null};
+const findItem = id => {for(const d of ['a','b','c']){const it=allItems(d).find(x=>x.id===id); if(it) return {item:it,day:d}; if(String(id).startsWith('swap-')){for(const base of allItems(d)){const sw=draft(d).swaps?.[base.id]; if(sw && effectiveItem(base,d).id===id) return {item:effectiveItem(base,d),day:d};} const src=String(id).slice(5),base=allItems(d).find(x=>x.id===src); if(base && draft(d).swaps?.[src]) return {item:effectiveItem(base,d),day:d};}} return null};
 
 function toast(msg, kind=''){
   const el = document.createElement('div');
@@ -1324,7 +1400,7 @@ if(calm){ heat = 0.35; paintBG(0); } else { requestAnimationFrame(frame); }
 function draft(day=S.day){
   let d = S.drafts[day];
   if(!d || d.date !== today()) {
-    d = {date:today(), start:null, ex:{}, notes:'', prep:{warmup:[],cooldown:[]}};
+    d = {date:today(), start:null, ex:{}, notes:'', prep:{warmup:[],cooldown:[]}, readiness:{sleep:'',energy:'',soreness:'',time:''}, deload:false, swaps:{}};
     S.drafts[day]=d;
   }
   // Backward-compatible migration for drafts created before prep-step tracking existed.
@@ -1333,21 +1409,46 @@ function draft(day=S.day){
   if(!d.prep || typeof d.prep !== 'object') d.prep = {warmup:[],cooldown:[]};
   if(!Array.isArray(d.prep.warmup)) d.prep.warmup = [];
   if(!Array.isArray(d.prep.cooldown)) d.prep.cooldown = [];
+  if(!d.readiness || typeof d.readiness!=='object') d.readiness={sleep:'',energy:'',soreness:'',time:''};
+  for(const k of ['sleep','energy','soreness','time']) if(d.readiness[k]==null) d.readiness[k]='';
+  if(typeof d.deload!=='boolean') d.deload=false;
+  if(!d.swaps || typeof d.swaps!=='object') d.swaps={};
   return d;
 }
+function effectiveItem(item, day=S.day){
+  const sw=draft(day).swaps?.[item.id];
+  if(!sw) return item;
+  return {...item,...(sw.spec||{}),id:sw.id||`swap-${item.id}`,sourceId:item.id,name:sw.name,swapped:true,swapReason:sw.reason||'temporary swap'};
+}
+function workSetsFor(item, day=S.day){
+  const base=Math.max(1,+item.sets||1);
+  return draft(day).deload && item.strength ? Math.max(2,Math.ceil(base*.7)) : base;
+}
+function prepSteps(day=S.day, kind='warmup'){
+  const p=S.program[day], raw=[...(p?.[kind]||[])];
+  if(kind!=='warmup') return raw.map(text=>({text}));
+  const firstBase=allItems(day).find(x=>x.strength);
+  const first=firstBase?effectiveItem(firstBase,day):null;
+  const target=first?sessionTarget(first,day):null;
+  const ramp=target?.weight ? warmupPlan(target.weight,first) : [];
+  if(!ramp.length) return raw.map(text=>({text}));
+  const base=raw.filter(x=>!/ramp-up|two light rows|goblet ramp/i.test(x)).map(text=>({text}));
+  return base.concat(ramp.map((r,i)=>({text:`${first.name} · ${r.weight} kg × ${r.reps}`,auto:true,note:`Ramp ${i+1} · ${Math.round(r.pct*100)}% of today's ${target.weight} kg target`})));
+}
 function prepState(day=S.day){
-  const d=draft(day), p=S.program[day];
+  const d=draft(day);
   for(const kind of ['warmup','cooldown']){
-    const total=(p?.[kind]||[]).length, cur=d.prep[kind]||[];
+    const total=prepSteps(day,kind).length, cur=d.prep[kind]||[];
     d.prep[kind]=Array.from({length:total},(_,i)=>!!cur[i]);
   }
   return d.prep;
 }
 function setsOf(day, item){
   const d = draft(day);
+  const count=workSetsFor(item,day);
   const cur = d.ex[item.id] || [];
-  if(!d.ex[item.id] || d.ex[item.id].length !== item.sets){
-    d.ex[item.id] = Array.from({length:item.sets},(_,i)=> ({w:'',r:'',rir:'',done:false,...(cur[i]||{})}));
+  if(!d.ex[item.id] || d.ex[item.id].length !== count){
+    d.ex[item.id] = Array.from({length:count},(_,i)=> ({w:'',r:'',rir:'',done:false,...(cur[i]||{})}));
   }else{
     d.ex[item.id] = d.ex[item.id].map(s=>({w:'',r:'',rir:'',done:false,...s}));
   }
@@ -1450,7 +1551,7 @@ function setStrengthE1RM(set){
 }
 function recentStrengthEstimate(item){
   const values=[];
-  history(item.id).slice(-4).forEach(entry=>(entry.sets||[]).forEach(st=>{
+  progressHistory(item.id).slice(-4).forEach(entry=>(entry.sets||[]).forEach(st=>{
     const v=setStrengthE1RM(st); if(v>0) values.push(v);
   }));
   const pr=S.prs[item.id];
@@ -1472,7 +1573,7 @@ function suggestedStrengthLoad(item){
   return {weight,estimate:round1(estimate),targetRir,reps:rr};
 }
 function nextTarget(item){
-  const h=history(item.id), rr=repRange(item.reps);
+  const h=progressHistory(item.id), rr=repRange(item.reps);
   if(!h.length){
     const fromPr=item.strength?suggestedStrengthLoad(item):null;
     if(fromPr) return {short:`Next · ≈${fromPr.weight}kg · ${rr.lo}-${rr.hi}`, detail:`Strength target from your recorded PR/e1RM (~${Math.round(fromPr.estimate)} kg). Start around ${fromPr.weight} kg and keep roughly ${fromPr.targetRir} RIR; use the nearest load your gym has.`};
@@ -1515,6 +1616,155 @@ function nextTarget(item){
   return {short:w?`Next · beat ${w}kg performance`:'Next · beat last performance', detail:'No numeric rep range is set, so progress the logged target gradually while keeping technique consistent.'};
 }
 
+function progressHistory(exId){ return history(exId).filter(e=>!e.deload); }
+function readinessScore(day=S.day){
+  const r=draft(day).readiness||{};
+  const sleep=+r.sleep, energy=+r.energy, sore=+r.soreness;
+  if(!sleep || !energy || !sore) return null;
+  return Math.round(((sleep+energy+(6-sore))/15)*100);
+}
+function readinessFactor(day=S.day){
+  const score=readinessScore(day);
+  if(score==null) return 1;
+  if(score<45) return .90;
+  if(score<65) return .95;
+  return 1;
+}
+function entryPeakE1RM(entry){
+  return Math.max(0,...((entry?.sets)||[]).map(st=>setStrengthE1RM(st)));
+}
+function fatigueStatus(){
+  let missed=0, grinders=0, falling=0, checked=0;
+  const reasons=[];
+  ['a','b','c'].forEach(day=>allItems(day).filter(it=>it.strength).forEach(it=>{
+    const h=progressHistory(it.id).slice(-3); if(!h.length) return; checked++;
+    const rr=repRange(it.reps), last=h.at(-1), ar=avgRIR(last.sets||[]);
+    if(rr && (last.sets||[]).some(st=>(+st.r||0)>0 && (+st.r||0)<rr.lo)){ missed++; if(missed<=2) reasons.push(`${it.name}: missed ${rr.lo}-rep floor`); }
+    if(ar!=null && ar<=1){ grinders++; if(grinders<=2) reasons.push(`${it.name}: ${round1(ar)} avg RIR`); }
+    if(h.length>=3){ const a=entryPeakE1RM(h[0]), b=entryPeakE1RM(h.at(-1)); if(a>0 && b<a*.97){ falling++; if(falling<=2) reasons.push(`${it.name}: e1RM down ${Math.round((1-b/a)*100)}%`); } }
+  }));
+  const recent=S.sessions.slice(-3), long=recent.filter(x=>(x.mins||0)>=90).length;
+  const score=missed*2+grinders+falling*2+(long>=2?1:0);
+  if(checked<2) return {level:'good',score:0,label:'Building baseline',reasons:['More completed strength sessions will improve fatigue detection.'],recommendation:'Keep logging RIR consistently.'};
+  if(score>=6) return {level:'deload',score,label:'Deload signal',reasons,recommendation:'Use ~10% less load and ~30% fewer heavy sets for this session/week, then reassess performance.'};
+  if(score>=3) return {level:'watch',score,label:'Fatigue watch',reasons,recommendation:'Hold progression today. Keep about 2 RIR and avoid extra failure work.'};
+  return {level:'good',score,label:'Fatigue clear',reasons:reasons.length?reasons:['No repeated missed rep floors or meaningful e1RM drop detected.'],recommendation:'Run the planned progression.'};
+}
+function baseTargetWeight(item){
+  const nt=nextTarget(item), m=String(nt.short||'').match(/(?:≈|hold |repeat )?(\d+(?:\.\d+)?)kg/i);
+  return m?+m[1]:null;
+}
+function sessionTarget(item, day=S.day){
+  const base=baseTargetWeight(item), d=draft(day), factor=(d.deload?.9:readinessFactor(day));
+  if(!base) return {weight:null,factor,adjusted:factor<1,sets:workSetsFor(item,day),rir:d.deload?3:2};
+  const step=loadJump(item), weight=round1(Math.max(step,Math.round((base*factor)/step)*step));
+  return {weight,factor,adjusted:Math.abs(weight-base)>.01,base,sets:workSetsFor(item,day),rir:d.deload?3:2};
+}
+function warmupPlan(target,item){
+  target=+target||0; if(!target) return [];
+  const step=Math.max(.5,loadJump(item)||2.5), scheme=[{pct:.4,reps:6},{pct:.55,reps:4},{pct:.7,reps:2},{pct:.85,reps:1}];
+  const rows=[];
+  for(const x of scheme){
+    let weight=round1(Math.max(step,Math.round((target*x.pct)/step)*step));
+    if(weight>=target) continue;
+    if(rows.some(r=>r.weight===weight)) continue;
+    rows.push({...x,weight});
+  }
+  return rows;
+}
+function plateBreakdown(total, bar=+S.settings.barWeight||20){
+  total=+total||0; bar=+bar||20;
+  if(total<bar) return {text:`Target is below the ${bar} kg bar.`,remainder:round1(total-bar)};
+  let side=(total-bar)/2, remain=side, used=[];
+  const plates=[...S.settings.plates].map(Number).filter(x=>x>0).sort((a,b)=>b-a);
+  for(const plate of plates){ const n=Math.floor((remain+1e-6)/plate); if(n){used.push([plate,n]); remain=Math.round((remain-n*plate)*1000)/1000;} }
+  const text=used.length?used.map(([w,n])=>`${n}×${w}`).join(' + '):'no plates';
+  return {text:`Each side: ${text}${remain>0?` · +${remain} kg unavailable`:''}`,remainder:remain};
+}
+function readinessAdvice(day=S.day){
+  const score=readinessScore(day), fat=fatigueStatus(), d=draft(day), mins=+d.readiness?.time||0;
+  const timeNote=mins && mins<45 ? ` You only have ${mins} min: prioritize the heavy-strength block and treat conditioning/accessories as optional.` : '';
+  if(d.deload) return {tone:'low',score,label:score==null?'Deload active':`${score}% readiness`,text:'Deload is active today: heavy lifts use about 10% less load, ~30% fewer work sets, and a 3 RIR target.'+timeNote};
+  if(score==null) return {tone:'watch',score,label:'Check in',text:`Rate sleep, energy and soreness. ${fat.recommendation}${timeNote}`};
+  if(score<45) return {tone:'low',score,label:`${score}% readiness`,text:'Low readiness: today’s suggested heavy loads are automatically reduced about 10%. Keep technique clean and stop adding fatigue.'+timeNote};
+  if(score<65) return {tone:'watch',score,label:`${score}% readiness`,text:'Moderate readiness: today’s suggested heavy loads are automatically reduced about 5%. Progress only if bar speed and RIR are on target.'+timeNote};
+  return {tone:'good',score,label:`${score}% readiness`,text:(fat.level==='deload'?`Readiness is okay, but recent training data still shows a deload signal. ${fat.recommendation}`:'Readiness supports the normal planned progression.')+timeNote};
+}
+function renderTodayCard(){
+  const d=draft(), r=d.readiness, adv=readinessAdvice(), fat=fatigueStatus();
+  const scale=(key)=>[1,2,3,4,5].map(v=>`<button type="button" data-ready="${key}" data-value="${v}" aria-pressed="${+r[key]===v}">${v}</button>`).join('');
+  $('#today-card').innerHTML=`
+    <div class="today-head"><div><div class="today-title">Today · readiness & fatigue</div><div class="quiet-note">1 = low · 5 = high. For soreness, 5 = very sore.</div></div><span class="today-score ${adv.tone}">${esc(adv.label)}</span></div>
+    <div class="readiness-grid">
+      <label class="readiness-field"><span class="lb">Sleep quality</span><span class="ready-scale">${scale('sleep')}</span></label>
+      <label class="readiness-field"><span class="lb">Energy</span><span class="ready-scale">${scale('energy')}</span></label>
+      <label class="readiness-field"><span class="lb">Soreness</span><span class="ready-scale">${scale('soreness')}</span></label>
+      <label class="readiness-field"><span class="lb">Minutes available</span><input id="ready-time" type="number" min="15" max="240" step="5" value="${esc(r.time||'')}" placeholder="60"></label>
+    </div>
+    <div class="today-advice"><div><span class="fatigue-tag ${fat.level}">${esc(fat.label)}</span> <strong>${esc(adv.text)}</strong>${fat.reasons?.length?`<div class="quiet-note" style="margin-top:4px">${esc(fat.reasons.slice(0,3).join(' · '))}</div>`:''}</div><div class="actions">${fat.level!=='good'||d.deload?`<button class="mini ${d.deload?'ghost':'solid'}" type="button" data-ready-action="deload">${d.deload?'Remove deload':'Apply deload today'}</button>`:''}</div></div>`;
+}
+function goalProgress(goal){
+  const found=findItem(goal.exerciseId), item=found?.item;
+  if(!item) return {pct:0,current:0,target:e1rm(+goal.weight||0,+goal.reps||1)};
+  const target=e1rm(+goal.weight||0,+goal.reps||1), current=recentStrengthEstimate(item);
+  return {pct:target?Math.max(0,Math.min(100,Math.round(current/target*100))):0,current,target};
+}
+function renderGoals(){
+  const el=$('#goal-list'); if(!el) return;
+  if(!S.goals.length){el.innerHTML='<div class="empty"><strong>No strength goals yet</strong>Add a target such as DB Bench 40 kg × 5 and Iron Ledger will track estimated progress.</div>';return;}
+  el.innerHTML=S.goals.map(g=>{const item=findItem(g.exerciseId)?.item,p=goalProgress(g);return `<div class="goal-row" data-goal="${esc(g.id)}"><div class="goal-top"><span class="goal-name">${esc(item?.name||g.name||'Exercise')}</span><span class="goal-target">${g.weight}kg × ${g.reps}</span></div><div class="goal-progress"><i style="--p:${p.pct}%"></i></div><div class="goal-meta"><span>${p.current?`e1RM ${Math.round(p.current)} / ${Math.round(p.target)} · ${p.pct}%`:'Log a weighted set to establish progress'}</span><button class="goal-remove" type="button" data-goal-remove="${esc(g.id)}">remove</button></div></div>`}).join('');
+}
+function swapAlternatives(item){
+  const n=item.name.toLowerCase();
+  const rules=[
+    [/bench|chest press/,['Machine Chest Press','Barbell Bench Press','Weighted Push-Up']],
+    [/shoulder press|overhead press/,['Machine Shoulder Press','Landmine Press','Barbell Overhead Press']],
+    [/incline.*press/,['Incline Machine Press','Incline Barbell Press','Low-Incline Smith Press']],
+    [/lateral raise/,['Cable Lateral Raise','Machine Lateral Raise','Lean-Away Lateral Raise']],
+    [/pushdown|triceps/,['Overhead Cable Extension','DB Skull Crusher','Close-Grip Press']],
+    [/fly|pec/,['Pec Deck','Cable Fly','DB Fly']],
+    [/dumbbell row|db row|cable row|seated row/,['Chest-Supported DB Row','Machine Row','One-Arm Cable Row']],
+    [/pulldown|pull-up|chin-up/,['Assisted Pull-Up','Neutral-Grip Pulldown','Single-Arm Pulldown']],
+    [/face pull|rear delt/,['Reverse Pec Deck','Rear-Delt Cable Fly','Chest-Supported Rear-Delt Raise']],
+    [/curl/,['Cable Curl','EZ-Bar Curl','Incline DB Curl']],
+    [/goblet squat|squat/,['Hack Squat','Leg Press','Front Squat']],
+    [/romanian|rdl|deadlift/,['Barbell Romanian Deadlift','45° Back Extension','Good Morning']],
+    [/lunge|split squat/,['Bulgarian Split Squat','Leg Press','Step-Up']],
+    [/leg curl/,['Seated Leg Curl','Lying Leg Curl','Nordic Curl']],
+    [/calf/,['Seated Calf Raise','Standing Machine Calf Raise','Leg-Press Calf Raise']],
+    [/adductor/,['Cable Hip Adduction','Copenhagen Plank','Wide-Stance Leg Press']],
+    [/hip thrust|glute bridge/,['Barbell Hip Thrust','Glute Bridge','45° Back Extension']]
+  ];
+  for(const [re,list] of rules) if(re.test(n)) return list.filter(x=>x.toLowerCase()!==n).slice(0,3);
+  return ['Similar machine variation','Similar dumbbell variation','Similar cable variation'];
+}
+function openSwapDialog(item){
+  const sourceId=item.sourceId||item.id, base=findItem(sourceId)?.item||item;
+  const done=(draft().ex[item.id]||[]).some(s=>s.done);
+  if(done){toast('Swap this lift before logging work sets','bad');return;}
+  $('#dlg-title').textContent=`Swap · ${base.name}`;
+  const choices=swapAlternatives(base);
+  $('#dlg-body').innerHTML=`<label><span class="lb">Why are you swapping?</span><select id="swap-reason"><option>Equipment unavailable</option><option>Pain / discomfort</option><option>Different equipment</option><option>Preference today</option></select></label><div class="swap-grid">${choices.map((x,i)=>`<button class="swap-choice" type="button" data-swap-choice="${esc(x)}"><strong>${esc(x)}</strong><span>same role · keep prescription</span></button>`).join('')}</div><label><span class="lb">Or type a replacement</span><input id="swap-custom" placeholder="Exercise name"></label><div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap"><button class="mini ghost" id="swap-cancel" type="button">Cancel</button><button class="mini" id="swap-today" type="button">Just today</button><button class="mini solid" id="swap-plan" type="button">Replace in plan</button></div>`;
+  let chosen=choices[0]||'';
+  $$('#dlg-body [data-swap-choice]').forEach(b=>b.onclick=()=>{chosen=b.dataset.swapChoice;$$('#dlg-body [data-swap-choice]').forEach(x=>x.style.borderColor='');b.style.borderColor='var(--ember)';});
+  $('#swap-cancel').onclick=()=>$('#dlg').close();
+  const value=()=>$('#swap-custom').value.trim()||chosen;
+  $('#swap-today').onclick=()=>{const name=value();if(!name)return;draft().swaps[sourceId]={id:`swap-${sourceId}-${Date.now().toString(36)}`,name,reason:$('#swap-reason').value,spec:{sets:base.sets,reps:base.reps,rest:base.rest,strength:base.strength,pr:false}};persistDraft();$('#dlg').close();renderDay();toast(`Swapped today · ${name}`,'ok');};
+  $('#swap-plan').onclick=()=>{const name=value();if(!name)return;const day=findItem(sourceId)?.day||S.day, block=S.program[day].blocks.find(b=>b.items.some(x=>x.id===sourceId));if(!block)return;const ix=block.items.findIndex(x=>x.id===sourceId),newId=day+'-'+Math.random().toString(36).slice(2,8),replacement={...base,id:newId,name,pr:false};block.items[ix]=replacement;if(draft(day).ex[sourceId]){draft(day).ex[newId]=draft(day).ex[sourceId];delete draft(day).ex[sourceId];}delete draft(day).swaps[sourceId];save('program',S.program);persistDraft();$('#dlg').close();renderDay();toast(`Plan updated · ${name}`,'ok');};
+  $('#dlg').showModal();
+}
+function openWarmupTool(item){
+  const st=sessionTarget(item), initial=st.weight||(+setsOf(S.day,item)[0]?.w||'');
+  $('#dlg-title').textContent=`Warm-up & plates · ${item.name}`;
+  const draw=()=>{const target=+$('#tool-target')?.value||0,bar=+$('#tool-bar')?.value||20,plan=warmupPlan(target,item),pb=plateBreakdown(target,bar);$('#tool-output').innerHTML=`<div class="tool-card"><h4>Automatic ramp-up</h4>${plan.length?`<div class="ramp-list">${plan.map((r,i)=>`<div class="ramp-row"><span class="n">${i+1}</span><span class="w">${r.weight} kg</span><span class="r">× ${r.reps}</span></div>`).join('')}</div>`:'<div class="quiet-note">Enter a working weight to build the ramp-up.</div>'}</div><div class="tool-card"><h4>Barbell plate calculator</h4><div class="plate-result">${target?`${target} kg total · ${bar} kg bar<br>${esc(pb.text)}`:'Enter a total working weight above.'}</div><div class="quiet-note">Uses your saved plate inventory: ${S.settings.plates.join(', ')} kg.</div></div>`;};
+  $('#dlg-body').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><label><span class="lb">Working weight kg</span><input id="tool-target" type="number" step="0.5" value="${initial||''}" placeholder="80"></label><label><span class="lb">Bar weight kg</span><input id="tool-bar" type="number" step="0.5" value="${S.settings.barWeight}"></label></div><label><span class="lb">Available plates kg</span><input id="tool-plates" value="${esc(S.settings.plates.join(', '))}" placeholder="25, 20, 15, 10, 5, 2.5, 1.25"></label><div id="tool-output"></div><div style="display:flex;justify-content:flex-end"><button class="mini solid" id="tool-close" type="button">Done</button></div>`;
+  $('#dlg').showModal(); draw();
+  $('#tool-target').oninput=draw;
+  $('#tool-bar').oninput=()=>{S.settings.barWeight=+$('#tool-bar').value||20;save('settings',S.settings);draw();};
+  $('#tool-plates').onchange=()=>{const vals=$('#tool-plates').value.split(',').map(x=>+x.trim()).filter(x=>x>0);if(vals.length){S.settings.plates=[...new Set(vals)].sort((a,b)=>b-a);save('settings',S.settings);draw();}};
+  $('#tool-close').onclick=()=>$('#dlg').close();
+}
+
 function sparkline(exId){
   const h = history(exId).slice(-8);
   const pts = h.map(e=>Math.max(...e.sets.map(s=>e1rm(+s.w||0,+s.r||0)),0)).filter(v=>v>0);
@@ -1531,13 +1781,15 @@ function sparkline(exId){
 function exRow(item, idx){
   const sets = setsOf(S.day, item);
   const done = sets.filter(s=>s.done).length;
-  const pct = item.sets ? done/item.sets : 0;
+  const workSets=workSetsFor(item);
+  const pct = workSets ? done/workSets : 0;
   const C = 2*Math.PI*13;
   const prev = lastEntry(item.id);
   const pr = S.prs[item.id];
   const vol = sets.reduce((a,s)=>a+((+s.w||0)*(+s.r||0)),0);
   const prevTxt = prev ? `<span class="prev">last ${prev.sets.filter(s=>s.w||s.r).map(s=>`${s.w?`${s.w}×`:''}${s.r}${s.rir!==''&&s.rir!=null?` @${s.rir}RIR`:''}`).join(' ')}</span>` : '';
   const nt = nextTarget(item);
+  const st = sessionTarget(item);
 
   const setRows = sets.map((s,i)=>{
     const p = prev?.sets?.[i];
@@ -1554,15 +1806,15 @@ function exRow(item, idx){
     </div>`;
   }).join('');
 
-  return `<article class="ex${done===item.sets&&done>0?' done':''}" data-ex="${item.id}" style="--i:${idx}">
+  return `<article class="ex${done===workSets&&done>0?' done':''}" data-ex="${item.id}" style="--i:${idx}">
     <button class="ex-head" aria-expanded="false">
       <span class="ring">
         <svg width="30" height="30"><circle class="bg" cx="15" cy="15" r="13"/><circle class="fg" cx="15" cy="15" r="13" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}"/></svg>
-        <b>${done}/${item.sets}</b>
+        <b>${done}/${workSets}</b>
       </span>
       <span>
         <span class="ex-name">${esc(item.name)}</span>
-        <span class="ex-sub"><span>${item.sets} × ${esc(item.reps)}</span>${item.rest?`<span>rest ${item.rest}s</span>`:''} ${prevTxt}<span class="next-target" title="${esc(nt.detail)}">${esc(nt.short)}</span></span>
+        <span class="ex-sub"><span>${workSets} × ${esc(item.reps)}</span>${item.rest?`<span>rest ${item.rest}s</span>`:''} ${item.swapped?`<span class="ex-swapped">swapped today</span>`:''} ${prevTxt}<span class="next-target" title="${esc(nt.detail)}">${esc(nt.short)}</span>${st.weight?`<span class="today-target ${st.adjusted?'adjusted':''}">Today · ${st.weight}kg · ${workSets} sets · ${st.rir} RIR</span>`:''}</span>
       </span>
       ${pr?`<span class="pr-chip">PR ${pr.w}kg</span>`:'<span></span>'}
       <span class="chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -1574,6 +1826,8 @@ function exRow(item, idx){
         <button data-act="addset">+ set</button>
         <button data-act="drop">remove</button>
         <button data-act="history">history</button>
+        ${item.strength?'<button data-act="warmup">warm-up</button>':''}
+        <button data-act="swap">swap</button>
         <button data-act="ask">ask coach</button>
         ${sparkline(item.id)}
       </div>
@@ -1584,15 +1838,15 @@ function exRow(item, idx){
 function renderPrep(p=S.program[S.day]){
   const state=prepState();
   for(const kind of ['warmup','cooldown']){
-    const steps=p[kind]||[], done=state[kind].filter(Boolean).length, total=steps.length;
+    const steps=prepSteps(S.day,kind), done=state[kind].filter(Boolean).length, total=steps.length;
     const id=kind==='warmup'?'warmup':'cooldown';
     const card=$(`.prep-card.${kind==='warmup'?'warm':'cool'}`);
     if(card) card.classList.toggle('prep-complete', total>0 && done===total);
     $(`#${id}-count`).textContent = total ? `${done}/${total} done` : 'No steps';
     $(`#${id}`).innerHTML = steps.map((x,i)=>`<li>
-      <button type="button" class="prep-step" data-prep-kind="${kind}" data-prep-index="${i}" aria-pressed="${state[kind][i]}" aria-label="${state[kind][i]?'Mark incomplete':'Mark complete'}: ${esc(x)}">
+      <button type="button" class="prep-step" data-prep-kind="${kind}" data-prep-index="${i}" aria-pressed="${state[kind][i]}" aria-label="${state[kind][i]?'Mark incomplete':'Mark complete'}: ${esc(x.text)}">
         <span class="prep-tick" aria-hidden="true"><span class="prep-num">${String(i+1).padStart(2,'0')}</span><span class="prep-check">✓</span></span>
-        <span class="prep-step-copy">${esc(x)}</span>
+        <span class="prep-step-copy">${esc(x.text)}${x.note?`<span class="auto-ramp-note">${esc(x.note)}</span>`:''}</span>
       </button>
     </li>`).join('');
   }
@@ -1608,10 +1862,11 @@ function renderDay(){
   let i = 0;
   $('#blocks').innerHTML = p.blocks.map(b=>`
     <div class="block-label"><span class="eyebrow">${esc(b.label)}</span></div>
-    ${b.items.map(it=>exRow(it, i++)).join('') || '<div class="empty">Nothing here yet.</div>'}
+    ${b.items.map(it=>exRow(effectiveItem(it,S.day), i++)).join('') || '<div class="empty">Nothing here yet.</div>'}
   `).join('');
 
   $('#notes').value = draft().notes || '';
+  renderTodayCard();
   renderSummary();
   renderDaybar();
 }
@@ -1672,6 +1927,15 @@ $('#prep').addEventListener('click', e=>{
   }
 });
 
+$('#today-card').addEventListener('click', e=>{
+  const b=e.target.closest('[data-ready]');
+  if(b){ draft().readiness[b.dataset.ready]=+b.dataset.value; persistDraft(); renderDay(); return; }
+  const act=e.target.closest('[data-ready-action]')?.dataset.readyAction;
+  if(act==='deload'){ draft().deload=!draft().deload; persistDraft(); renderDay(); toast(draft().deload?'Deload applied to today':'Deload removed','ok'); }
+});
+$('#today-card').addEventListener('input',e=>{ if(e.target.id==='ready-time'){draft().readiness.time=e.target.value;persistDraft();} });
+$('#today-card').addEventListener('change',e=>{ if(e.target.id==='ready-time') renderTodayCard(); });
+
 $('#daybar').addEventListener('click', e=>{
   const b = e.target.closest('[data-day]'); if(!b) return;
   S.day = b.dataset.day; renderDay();
@@ -1692,9 +1956,11 @@ $('#blocks').addEventListener('click', e=>{
   if(tick){ toggleSet(item, +tick.dataset.tick, tick); return; }
 
   const act = e.target.closest('[data-act]')?.dataset.act;
-  if(act==='addset'){ item.sets++; save('program',S.program); redrawKeepOpen(); }
+  if(act==='addset'){ if(item.swapped){const sw=draft().swaps[item.sourceId];sw.spec.sets=(+sw.spec.sets||item.sets)+1;persistDraft();}else{item.sets++;save('program',S.program);} redrawKeepOpen(); }
   if(act==='drop'){ removeExercise(id); }
   if(act==='history'){ openExerciseAnalytics(item); }
+  if(act==='warmup'){ openWarmupTool(item); }
+  if(act==='swap'){ openSwapDialog(item); }
   if(act==='ask'){ askCoach(`Look at my ${item.name} numbers, including RIR. Am I progressing, and what exact target should I use next session?`); }
 });
 
@@ -1760,7 +2026,9 @@ function checkPR(item, s){
 }
 
 function removeExercise(id){
-  S.program[S.day].blocks.forEach(b=>{ b.items = b.items.filter(x=>x.id!==id) });
+  const resolved=findItem(id)?.item;
+  const baseId=resolved?.sourceId||id;
+  S.program[S.day].blocks.forEach(b=>{ b.items = b.items.filter(x=>x.id!==baseId) });
   save('program', S.program);
   renderDay(); toast('Removed from the plan');
 }
@@ -1802,21 +2070,22 @@ $('#btn-finish').addEventListener('click', ()=>{
   const {vol,sets,reps} = renderSummary();
   if(!sets){ toast('Log at least one set first','bad'); return; }
   const exercises=[];
-  allItems(day).forEach(item=>{
+  allItems(day).forEach(base=>{
+    const item=effectiveItem(base,day);
     const arr = (d.ex[item.id]||[]).filter(s=>s.done && (s.w||s.r));
     if(!arr.length) return;
     const clean=arr.map(s=>({w:+s.w||0,r:+s.r||0,rir:s.rir===''||s.rir==null?null:+s.rir}));
-    (S.log[item.id] ||= []).push({date:d.date, sets:clean});
+    (S.log[item.id] ||= []).push({date:d.date, sets:clean,deload:!!d.deload,name:item.name,temporarySwap:!!item.swapped});
     if(S.log[item.id].length>40) S.log[item.id].shift();
-    exercises.push({id:item.id,name:item.name,target:`${item.sets}x${item.reps}`,sets:clean});
+    exercises.push({id:item.id,sourceId:item.sourceId||null,name:item.name,swapped:!!item.swapped,swapReason:item.swapReason||null,target:`${workSetsFor(item,day)}x${item.reps}`,sets:clean});
   });
   const mins = d.start ? Math.round((Date.now()-d.start)/60000) : null;
   const prep=prepState(day);
   const prepProgress={
-    warmup:{done:prep.warmup.filter(Boolean).length,total:(S.program[day].warmup||[]).length},
-    cooldown:{done:prep.cooldown.filter(Boolean).length,total:(S.program[day].cooldown||[]).length}
+    warmup:{done:prep.warmup.filter(Boolean).length,total:prepSteps(day,'warmup').length},
+    cooldown:{done:prep.cooldown.filter(Boolean).length,total:prepSteps(day,'cooldown').length}
   };
-  const session={id:`${d.date}-${day}-${Date.now()}`,date:d.date,day,vol:Math.round(vol),sets,reps,mins,notes:d.notes||'',prep:prepProgress,exercises};
+  const session={id:`${d.date}-${day}-${Date.now()}`,date:d.date,day,vol:Math.round(vol),sets,reps,mins,notes:d.notes||'',prep:prepProgress,readiness:{...d.readiness,score:readinessScore(day)},deload:!!d.deload,exercises};
   S.sessions.push(session);
   save('log',S.log); save('sessions',S.sessions);
   delete S.drafts[day]; persistDraft();
@@ -1824,6 +2093,14 @@ $('#btn-finish').addEventListener('click', ()=>{
   toast(`Session banked · ${fmtKg(vol)} kg, ${sets} sets`, 'ok');
   generateSessionReview(session, {auto:true});
 });
+
+$('#btn-add-goal').addEventListener('click',()=>{
+  const opts=['a','b','c'].flatMap(day=>allItems(day).map(it=>`<option value="${esc(it.id)}">${esc(it.name)}</option>`)).join('');
+  $('#dlg-title').textContent='Add strength goal';
+  $('#dlg-body').innerHTML=`<label><span class="lb">Exercise</span><select id="goal-ex">${opts}</select></label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><label><span class="lb">Goal weight kg</span><input id="goal-w" type="number" step="0.5" min="0" placeholder="40"></label><label><span class="lb">Reps</span><input id="goal-r" type="number" min="1" max="20" value="5"></label></div><label><span class="lb">Target date (optional)</span><input id="goal-date" type="date"></label><div style="display:flex;gap:8px;justify-content:flex-end"><button class="mini ghost" id="goal-cancel" type="button">Cancel</button><button class="mini solid" id="goal-save" type="button">Add goal</button></div>`;
+  $('#dlg').showModal(); $('#goal-cancel').onclick=()=>$('#dlg').close(); $('#goal-save').onclick=()=>{const ex=$('#goal-ex').value,w=+$('#goal-w').value,r=+$('#goal-r').value;if(!ex||!w||!r){toast('Choose an exercise, weight and reps','bad');return;}const item=findItem(ex)?.item;S.goals.push({id:'g-'+Date.now().toString(36),exerciseId:ex,name:item?.name||'',weight:w,reps:r,date:$('#goal-date').value||''});save('goals',S.goals);$('#dlg').close();renderGoals();toast('Strength goal added','ok');};
+});
+$('#goal-list').addEventListener('click',e=>{const id=e.target.closest('[data-goal-remove]')?.dataset.goalRemove;if(!id)return;S.goals=S.goals.filter(g=>g.id!==id);save('goals',S.goals);renderGoals();});
 
 $('#btn-add').addEventListener('click', ()=>{
   $('#dlg-title').textContent = 'Add exercise to Day '+S.day.toUpperCase();
@@ -1905,7 +2182,8 @@ function localSessionReview(session){
   const targets=ex.slice(0,3).map(x=>{const item=findItem(x.id)?.item; return item?`${item.name}: ${nextTarget(item).short.replace(/^Next ·\s*/, '')}`:null}).filter(Boolean);
   const strength=best?.prev?`Best strength signal: **${best.name} e1RM ${best.delta>=0?'+':''}${round1(best.delta)} kg vs last time**.`:best?.cur?`First useful strength baseline: **${best.name} e1RM ${Math.round(best.cur)} kg**.`:'Log weight and reps on your main lifts to build strength trends.';
   const prepNote=session.prep ? ` Warm-up ${session.prep.warmup?.done||0}/${session.prep.warmup?.total||0}; cool-down ${session.prep.cooldown?.done||0}/${session.prep.cooldown?.total||0}.` : '';
-  return `**${session.sets} sets · ${fmtKg(session.vol||0)} kg${session.mins?` · ${session.mins} min`:''}.**${avgSessionRir==null?'':` Average effort was ${round1(avgSessionRir)} RIR.`}${prepNote}
+  const readyNote=session.readiness?.score!=null?` Readiness was ${session.readiness.score}%${session.deload?' and this was a deload session':''}.`:session.deload?' This was a deload session.':'';
+  return `**${session.sets} sets · ${fmtKg(session.vol||0)} kg${session.mins?` · ${session.mins} min`:''}.**${avgSessionRir==null?'':` Average effort was ${round1(avgSessionRir)} RIR.`}${prepNote}${readyNote}
 
 ${strength}${targets.length?`
 
@@ -1922,7 +2200,12 @@ function localWeeklyReview(ws=weekStart()){
   const days={a:0,b:0,c:0}; sessions.forEach(s=>days[s.day]=(days[s.day]||0)+1);
   const weekPRs=Object.values(S.prs).filter(p=>daysBetween(ws,p.date)>=0 && daysBetween(p.date,today())>=0);
   const rir=avgRIR(sessions.flatMap(s=>(s.exercises||[]).flatMap(x=>x.sets||[])));
-  return `**${sessions.length} sessions · ${sets} working sets · ${fmtKg(vol)} kg moved.** Split: Push ${days.a||0}, Pull ${days.b||0}, Legs ${days.c||0}.${rir==null?'':` Average logged effort: ${round1(rir)} RIR.`}${weekPRs.length?`\n\nPRs this week: **${weekPRs.map(p=>p.name).slice(0,4).join(', ')}**.`:''}\n\n${sessions.length>=3?'You hit the intended three-session frequency.':'You are below the three-session target for this split so far.'}`;
+  const ready=avg(sessions.map(x=>x.readiness?.score).filter(x=>x!=null).map(Number)), deloads=sessions.filter(x=>x.deload).length;
+  return `**${sessions.length} sessions · ${sets} working sets · ${fmtKg(vol)} kg moved.** Split: Push ${days.a||0}, Pull ${days.b||0}, Legs ${days.c||0}.${rir==null?'':` Average logged effort: ${round1(rir)} RIR.`}${ready==null?'':` Average readiness: ${Math.round(ready)}%.`}${deloads?` Deload sessions: ${deloads}.`:''}${weekPRs.length?`
+
+PRs this week: **${weekPRs.map(p=>p.name).slice(0,4).join(', ')}**.`:''}
+
+${sessions.length>=3?'You hit the intended three-session frequency.':'You are below the three-session target for this split so far.'}`;
 }
 function renderReviews(){
   const last=S.sessions.at(-1), ws=weekStart(), week=sessionsThisWeek(ws);
@@ -1939,7 +2222,7 @@ async function generateReviewAI(kind, payload){
   const system=`You are doing a FULL ${isWeek?'weekly':'session'} strength-training review from logged data. Accuracy and completeness matter more than brevity. No emoji. Do not output JSON and do not invent missing numbers.
 
 Review requirements:
-- Use the athlete's actual weights, reps, RIR, volume, notes, prep completion, PRs and previous comparable sessions whenever present.
+- Use the athlete's actual weights, reps, RIR, volume, notes, prep completion, readiness, deload status, goals, PRs and previous comparable sessions whenever present.
 - Do not skip an exercise that has logged working sets. Review every logged exercise individually.
 - Compare performance with the supplied previous ${isWeek?'week and recent lift history':'same-day sessions'} where possible.
 - Explain whether each important lift improved, held, regressed, or cannot yet be judged.
@@ -1973,7 +2256,7 @@ async function generateSessionReview(session,{auto=false}={}){
       recentHistory:history(it.id).slice(-5)
     }));
     const text=await generateReviewAI('session',{
-      session, previousSameDay:previous, dayProgram:dayItems,
+      session, previousSameDay:previous, dayProgram:dayItems, goals:S.goals.map(g=>({...g,progress:goalProgress(g)})), fatigue:fatigueStatus(),
       relevantPRs:Object.fromEntries(allItems(session.day).filter(it=>S.prs[it.id]).map(it=>[it.name,S.prs[it.id]])),
       signals:buildSignals().map(x=>({title:x.t,detail:x.d.replace(/<[^>]+>/g,'')}))
     });
@@ -1997,7 +2280,7 @@ async function generateWeeklyReview(){
       };
     }));
     const text=await generateReviewAI('weekly',{
-      weekStart:ws, sessions, priorWeek:prior, liftTrends,
+      weekStart:ws, sessions, priorWeek:prior, liftTrends, goals:S.goals.map(g=>({...g,progress:goalProgress(g)})), fatigue:fatigueStatus(),
       prs:Object.values(S.prs).filter(p=>daysBetween(ws,p.date)>=0 && daysBetween(p.date,today())>=0),
       signals:buildSignals()
     });
@@ -2024,6 +2307,9 @@ function renderRecords(){
 
 function buildSignals(){
   const out = [];
+  const fatigue=fatigueStatus();
+  if(fatigue.level==='deload') out.push({kind:'warn',t:'Deload signal',d:`<b>${esc(fatigue.recommendation)}</b> ${esc(fatigue.reasons.slice(0,3).join(' · '))}`});
+  else if(fatigue.level==='watch') out.push({kind:'hold',t:'Fatigue watch',d:`${esc(fatigue.recommendation)} ${esc(fatigue.reasons.slice(0,3).join(' · '))}`});
 
   ['a','b','c'].forEach(day=>{
     allItems(day).forEach(it=>{
@@ -2113,6 +2399,10 @@ function snapshot(){
     split:'3-day push / pull / legs, dumbbell and machine based',
     consistency:{sessions:S.sessions.length, streak:st, best, last7:S.sessions.filter(s=>daysBetween(s.date,today())<7).length},
     currentDay:`${S.day.toUpperCase()} ${S.program[S.day].name}`,
+    readiness:{...d.readiness,score:readinessScore(),deload:d.deload},
+    fatigue:fatigueStatus(),
+    goals:S.goals.map(g=>({...g,progress:goalProgress(g)})),
+    todayTargets:Object.fromEntries(allItems(S.day).map(base=>{const it=effectiveItem(base,S.day),t=sessionTarget(it,S.day);return [it.name,{weight:t.weight,sets:t.sets,reps:it.reps,rir:t.rir,adjusted:t.adjusted,swapped:!!it.swapped}]})),
     inProgress: live.length ? {sets:live, notes:d.notes||undefined} : 'nothing logged yet today',
     recentSessions: recent,
     lifts,
@@ -2151,7 +2441,7 @@ function fullReviewContext(mode='full'){
   const base={
     today:today(), mode, lastSession:last, previousComparableSessions:sameDayHistory,
     currentWeek:{weekStart:ws,sessions:currentWeek}, priorWeek:{weekStart:priorStart,sessions:priorWeek},
-    liftTrends, signals:buildSignals().map(x=>({title:x.t,detail:x.d.replace(/<[^>]+>/g,'')})),
+    liftTrends, goals:S.goals.map(g=>({...g,progress:goalProgress(g)})), readiness:{...draft().readiness,score:readinessScore(),deload:draft().deload}, fatigue:fatigueStatus(), signals:buildSignals().map(x=>({title:x.t,detail:x.d.replace(/<[^>]+>/g,'')})),
     consistency:(()=>{ const st=streaks(); return {totalSessions:S.sessions.length,currentStreak:st.live,bestStreak:st.best,last7:S.sessions.filter(s=>daysBetween(s.date,today())<7).length}; })()
   };
   if(mode==='session') return JSON.stringify({today:base.today,mode,lastSession:last,previousComparableSessions:sameDayHistory,liftTrends,signals:base.signals});
@@ -2174,6 +2464,8 @@ Response depth:
 - A review may contain several findings and several next-session targets; the "one directive" rule below applies only to ordinary coaching questions.
 
 Rules:
+- Use readiness, fatigue/deload status, temporary exercise swaps, goals, and today-adjusted targets when they are present in the training data. Never ignore a deload flag when recommending load.
+- Readiness is deterministic: low readiness may reduce today's heavy target; do not "motivate" the user back to the unadjusted load unless their logged data supports it.
 - Always cite their actual numbers. "Your bench e1RM went 41 -> 44 in three weeks" beats "you're progressing well".
 - For ordinary questions, finish with one clear directive: the exact weight, reps or change to make next session. For review requests, finish with a complete exact action plan instead.
 - The built-in program is strength-focused: primary lifts are mostly 4-6 reps, secondary strength lifts 6-8, with longer 2-3 minute rests. Accessories stay moderately higher rep where that is more appropriate.
@@ -2675,7 +2967,7 @@ function promptForApiKeyAtStartup(){
 }
 
 $('#btn-export').onclick = ()=>{
-  const blob = new Blob([JSON.stringify({program:S.program,log:S.log,sessions:S.sessions,prs:S.prs,reviews:S.reviews},null,2)],{type:'application/json'});
+  const blob = new Blob([JSON.stringify({program:S.program,log:S.log,sessions:S.sessions,prs:S.prs,reviews:S.reviews,goals:S.goals,settings:S.settings},null,2)],{type:'application/json'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = `iron-ledger-${today()}.json`; a.click();
   toast('Exported','ok');
@@ -2685,7 +2977,7 @@ $('#btn-import').onclick = ()=>{
   inp.onchange = async ()=>{
     try{
       const d = JSON.parse(await inp.files[0].text());
-      ['program','log','sessions','prs','reviews'].forEach(k=>{ if(d[k]){ S[k]=d[k]; save(k,d[k]); } });
+      ['program','log','sessions','prs','reviews','goals','settings'].forEach(k=>{ if(d[k]){ S[k]=d[k]; save(k,d[k]); } });
       renderAll(); toast('Imported','ok');
     }catch{ toast('That file is not valid','bad'); }
   };
@@ -2804,7 +3096,7 @@ syncCoachSheetMode();
 function renderAll(){
   const next = renderMeta();
   if(!S._picked){ S.day = next; S._picked = true; }
-  renderHeat(); renderDay(); renderRecords(); renderReviews(); renderChat(); renderAppSettings();
+  renderHeat(); renderDay(); renderRecords(); renderGoals(); renderReviews(); renderChat(); renderAppSettings();
 }
 renderAll();
 promptForApiKeyAtStartup();
